@@ -20,7 +20,7 @@ internal record Node<T>(T Value) where T : IEquatable<T>
 
     public override int GetHashCode() => Value?.GetHashCode() ?? 0;
 
-    public virtual bool Equals(Node<T> other)
+    public virtual bool Equals(Node<T>? other)
     {
         if (ReferenceEquals(this, other)) return true;
         if (ReferenceEquals(null, other)) return false;

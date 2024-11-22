@@ -10,19 +10,24 @@ namespace GraphT.Graph.Architecture.Implementations;
 internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T> 
     where T : IEquatable<T>
 {
-    protected INodeCollection<T> NodesCollection;
+    private readonly INodeCollection<T> _nodesCollection;
 
-    public IReadOnlySet<T> NodeValues => NodesCollection.Values;
-    public Node<T> this[T value] => NodesCollection[value];
+    protected GraphBase(INodeCollection<T> nodesCollection)
+    {
+        _nodesCollection = nodesCollection;
+    }
+
+    public IReadOnlySet<T> NodeValues => _nodesCollection.Values;
+    public Node<T> this[T value] => _nodesCollection[value];
     public Option<OnVisit<T>> OnVisitActionParameter { get; set; } = Option<OnVisit<T>>.None();
 
     public IPathSearch<T> ToPathSearch() => new PathSearch<T>(this);
 
     public void TraverseDfs(T start)
     {
-        if (!NodesCollection.Contains(start)) return;
+        if (!_nodesCollection.Contains(start)) return;
         
-        var node = NodesCollection[start];
+        var node = _nodesCollection[start];
         var visited = new HashSet<Node<T>>();
         var stack = new Stack<Node<T>>([node]);
 
@@ -48,9 +53,9 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
     
     public void TraverseBfs(T start)
     {
-        if (!NodesCollection.Contains(start)) return;
+        if (!_nodesCollection.Contains(start)) return;
         
-        var node = NodesCollection[start];
+        var node = _nodesCollection[start];
         var visited = new HashSet<Node<T>>() { node };
         var queue = new Queue<Node<T>>([node]);
         

@@ -6,9 +6,8 @@ namespace GraphT.Graph.Architecture.Implementations;
 internal sealed class ReadOnlyGraph<T> : GraphBase<T> 
     where T : IEquatable<T>
 {
-    private ReadOnlyGraph(IEnumerable<Node<T>> nodes)
+    private ReadOnlyGraph(IEnumerable<Node<T>> nodes) : base(new FrozenNodeCollection<T>(nodes))
     {
-        NodesCollection = new FrozenNodeCollection<T>(nodes);
     }
 
     public static ReadOnlyGraph<T> Create(IEnumerable<Node<T>> nodes)

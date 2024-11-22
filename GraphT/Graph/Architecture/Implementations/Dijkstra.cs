@@ -62,14 +62,16 @@ internal class Dijkstra<T> : IGraphSearchStrategy<T>
         return true;
     }
 
-    private static IEnumerable<T> GenPath(Dictionary<T, T> prev, T target)
+    private static IEnumerable<T> GenPath(Dictionary<T, T?> prev, T target)
     {
-        T n = target;
+        T? n = target;
         yield return n;
-        while (prev[n] is not null)
+
+        while (n is not null && prev[n] is not null)
         {
-            yield return prev[n];
             n = prev[n];
+            if (n is not null)
+                yield return n;
         }
     }
 }

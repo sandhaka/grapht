@@ -1,33 +1,11 @@
-using System.Text;
 using GraphT;
+using GraphT.Graph;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using Tests.Problems.Samples;
 using Xunit.Abstractions;
 
 namespace Tests;
-
-internal class VerifiableTestOutputHelper(ITestOutputHelper output) : ITestOutputHelper
-{
-    private readonly StringBuilder _stringBuilder = new();
-
-    public void WriteLine(string message)
-    {
-        _stringBuilder.AppendLine(message);
-        output.WriteLine(message);
-    }
-
-    public void WriteLine(string format, params object[] args)
-    {
-        _stringBuilder.AppendLine(string.Format(format, args));
-        output.WriteLine(format, args);
-    }
-
-    public string GetOutput()
-    {
-        return _stringBuilder.ToString().Trim();
-    }
-}
 
 public class GraphTests(ITestOutputHelper output)
 {
@@ -38,7 +16,7 @@ public class GraphTests(ITestOutputHelper output)
     {
         var problem = new SimpleGraphProblem();
 
-        var graph = GraphOrchestrator<string>.CreateReadOnly(problem);
+        var graph = Graph<string>.CreateReadOnly(problem);
 
         Assert.Equal(problem.AdjacencyList.Keys.Count, graph.NodeValues.Count);
     }
@@ -48,14 +26,14 @@ public class GraphTests(ITestOutputHelper output)
     {
         var problem = new SimpleBuggedGraphProblem();
 
-        Assert.Throws<InvalidGraphDataException<string>>(() => { GraphOrchestrator<string>.CreateReadOnly(problem); });
+        Assert.Throws<InvalidGraphDataException<string>>(() => { Graph<string>.CreateReadOnly(problem); });
     }
 
     [Fact(DisplayName = "Should use an action on graph traversal with DFS.")]
     public void ShouldUseAnActionOnGraphTraversalWithDFS()
     {
         var problem = new SimpleGraphProblem();
-        var graph = GraphOrchestrator<string>.CreateReadOnly(problem);
+        var graph = Graph<string>.CreateReadOnly(problem);
 
         graph.OnVisitActionParameter = new OnVisit<string>(value =>
         {
@@ -76,7 +54,7 @@ public class GraphTests(ITestOutputHelper output)
     public void ShouldUseAnActionOnGraphTraversalWithBFS()
     {
         var problem = new SimpleGraphProblem();
-        var graph = GraphOrchestrator<string>.CreateReadOnly(problem);
+        var graph = Graph<string>.CreateReadOnly(problem);
 
         graph.OnVisitActionParameter = new OnVisit<string>(value =>
         {
@@ -97,7 +75,7 @@ public class GraphTests(ITestOutputHelper output)
     public void ShouldSearchShortestPathWithDijkstra()
     {
         var problem = new PathProblem();
-        var graph = GraphOrchestrator<string>.CreateReadOnly(problem);
+        var graph = Graph<string>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
         var searchStrategy = pathSearch.GraphSearchStrategy;
         
@@ -121,7 +99,7 @@ public class GraphTests(ITestOutputHelper output)
     public void ShouldSearchShortestPathWithDijkstraEdgeCaseStartIsTarget()
     {
         var problem = new PathProblem();
-        var graph = GraphOrchestrator<string>.CreateReadOnly(problem);
+        var graph = Graph<string>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
         var searchStrategy = pathSearch.GraphSearchStrategy;
         
@@ -145,7 +123,7 @@ public class GraphTests(ITestOutputHelper output)
     public void ShouldSearchShortestPathWithDijkstraTargetNotExists()
     {
         var problem = new PathProblem();
-        var graph = GraphOrchestrator<string>.CreateReadOnly(problem);
+        var graph = Graph<string>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
         var searchStrategy = pathSearch.GraphSearchStrategy;
         

@@ -1,15 +1,14 @@
-using GraphT.Graph;
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.Implementations;
 using GraphT.Problems.Abstractions;
 
-namespace GraphT;
+namespace GraphT.Graph;
 
 /// <summary>
-/// Orchestrates the creation of graph structures.
+/// Provides static methods related to creating graphs.
 /// </summary>
-/// <typeparam name="T">The type of the nodes in the graph.</typeparam>
-public static class GraphOrchestrator<T> where T : IEquatable<T>
+/// <typeparam name="T">The type of the elements in the graph, typically vertices or nodes.</typeparam>
+public static class Graph<T> where T : IEquatable<T>
 {
     /// <summary>
     /// Creates a read-only graph from the given problem.
@@ -30,7 +29,7 @@ public static class GraphOrchestrator<T> where T : IEquatable<T>
         
         return graph;
     }
-
+    
     private static void SetNeighborhoods(HashSet<Node<T>> nodes, IGraphProblem<T> problem)
     {
         for (var i = 0; i < problem.AdjacencyList.Count; i++)
