@@ -4,7 +4,7 @@ namespace GraphT.Graph.Search;
 /// Represents the context required for path search operations within a graph.
 /// </summary>
 /// <typeparam name="T">The type of node values within the graph.</typeparam>
-public interface IPathSearchContext<T>
+public interface IPathSearchContext<T> where T : IEquatable<T>
 {
     /// <summary>
     /// Gets the set of all unique node values within the graph.
@@ -13,11 +13,11 @@ public interface IPathSearchContext<T>
     IReadOnlySet<T> NodeValues { get; }
 
     /// <summary>
-    /// Retrieves the neighbors of a specified node and the associated costs.
+    /// Iterates over the neighbors of the specified node, applying the specified action to each neighbor.
     /// </summary>
-    /// <param name="value">The value of the node for which neighbors are to be retrieved.</param>
-    /// <returns>An enumerable list of tuples where each tuple contains a neighboring node's value and the cost associated with moving to that neighbor.</returns>
-    IEnumerable<(T Value, decimal Cost)> Neighbors(T value);
+    /// <param name="nodeValue">The value of the node whose neighbors will be iterated over.</param>
+    /// <param name="body">The action to apply to each neighboring node and its associated cost.</param>
+    void IterateOverNeighbors(T nodeValue, Action<T, decimal> body);
 
     /// <summary>
     /// Gets the starting node value for the path search within the graph.

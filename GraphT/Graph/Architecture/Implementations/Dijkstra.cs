@@ -23,20 +23,20 @@ internal class Dijkstra<T> : IGraphSearchStrategy<T>
             var nv = queue.Dequeue();
             visited[nv] = true;
 
-            foreach (var (nextValue, cost) in context.Neighbors(nv))
+            context.IterateOverNeighbors(nv, (nextValue, cost) =>
             {
                 if (visited[nextValue])
-                    continue;
+                    return;
                 
                 var distance = distances[nv] + cost;
 
                 if (distance >= distances[nextValue]) 
-                    continue;
+                    return;
                 
                 pathMarker[nextValue] = nv;
                 distances[nextValue] = distance;
                 queue.Enqueue(nextValue, distance);
-            }
+            });
 
             if (!nv.Equals(context.Target)) 
                 continue;

@@ -8,7 +8,8 @@ namespace GraphT.Graph;
 /// Provides static methods related to creating graphs.
 /// </summary>
 /// <typeparam name="T">The type of the elements in the graph, typically vertices or nodes.</typeparam>
-public static class Graph<T> where T : IEquatable<T>
+public static class Graph<T> 
+    where T : IEquatable<T>
 {
     /// <summary>
     /// Creates a read-only graph from the given problem.
