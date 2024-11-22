@@ -8,17 +8,12 @@ internal class Dijkstra<T> : IGraphSearchStrategy<T>
 {
     public string Name => "Dijkstra";
     
-    // ReSharper disable once CognitiveComplexity
     public bool Run(IPathSearchContext<T> context, out Option<SearchResult<T>> result)
     {
-        bool found = false;
-        result = Option<SearchResult<T>>.None();
-        var nodeValuesSet = context.NodeValues;
+        var found = false;
         var queue = new PriorityQueue<T, decimal>();
-        
-        var visited = nodeValuesSet.ToDictionary(x => x, _ => false);
-        var distances = nodeValuesSet.ToDictionary(x => x, _ => decimal.MaxValue);
-        var prev = nodeValuesSet.ToDictionary(x => x, _ => default(T));
+
+        var (visited, distances, pathMarker) = DataStructPrepare(context.NodeValues);
         
         queue.Enqueue(context.Start, 0);
         distances[context.Start] = 0;
@@ -38,7 +33,7 @@ internal class Dijkstra<T> : IGraphSearchStrategy<T>
                 if (distance >= distances[nextValue]) 
                     continue;
                 
-                prev[nextValue] = nv;
+                pathMarker[nextValue] = nv;
                 distances[nextValue] = distance;
                 queue.Enqueue(nextValue, distance);
             }
@@ -49,17 +44,29 @@ internal class Dijkstra<T> : IGraphSearchStrategy<T>
             found = true;
             break;
         }
-
+        
+        result = Option<SearchResult<T>>.None();
+        
         if (found is false)
             return false;
         
         result = new SearchResult<T>
         {
-            Path = GenPath(prev, context.Target).Reverse().ToList(),
+            Path = GenPath(pathMarker, context.Target).Reverse().ToList(),
             TotalCost = distances[context.Target]
         };
 
         return true;
+    }
+
+    private static (Dictionary<T, bool> visited, Dictionary<T, decimal> distances, Dictionary<T, T?> pathMarker)
+        DataStructPrepare(IReadOnlySet<T> nodeValuesSet)
+    {
+        return (
+            visited: nodeValuesSet.ToDictionary(x => x, _ => false),
+            distances: nodeValuesSet.ToDictionary(x => x, _ => decimal.MaxValue),
+            pathMarker: nodeValuesSet.ToDictionary(x => x, _ => default(T))
+        );
     }
 
     private static IEnumerable<T> GenPath(Dictionary<T, T?> prev, T target)
