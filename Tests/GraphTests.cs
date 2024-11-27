@@ -77,7 +77,7 @@ public class GraphTests(ITestOutputHelper output)
         var problem = new PathProblem();
         var graph = Graph<string>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
-        var searchStrategy = pathSearch.GraphSearchStrategy;
+        var searchStrategy = pathSearch.PathSearchStrategy;
         
         output.WriteLine($"Using {searchStrategy.Name} search strategy.");
         
@@ -101,7 +101,7 @@ public class GraphTests(ITestOutputHelper output)
         var problem = new PathProblem();
         var graph = Graph<string>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
-        var searchStrategy = pathSearch.GraphSearchStrategy;
+        var searchStrategy = pathSearch.PathSearchStrategy;
         
         output.WriteLine($"Using {searchStrategy.Name} search strategy.");
         
@@ -125,7 +125,7 @@ public class GraphTests(ITestOutputHelper output)
         var problem = new PathProblem();
         var graph = Graph<string>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
-        var searchStrategy = pathSearch.GraphSearchStrategy;
+        var searchStrategy = pathSearch.PathSearchStrategy;
         
         output.WriteLine($"Using {searchStrategy.Name} search strategy.");
         

@@ -1,13 +1,17 @@
+using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Implementations;
 
-internal class Dijkstra<T> : IGraphSearchStrategy<T>
+internal class Dijkstra<T> : IPathSearchStrategy<T>
     where T : IEquatable<T>
 {
     public string Name => "Dijkstra";
-    
+
+    // Dijkstra has no heuristic
+    public Option<Heuristic<T>> Heuristic { get; set; } = Option<Heuristic<T>>.None();
+
     public bool Run(IPathSearchContext<T> context, out Option<SearchResult<T>> result)
     {
         var found = false;

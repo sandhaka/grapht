@@ -1,3 +1,4 @@
+using GraphT.Graph.Parameters;
 using Monads.Optional;
 
 namespace GraphT.Graph.Search;
@@ -6,9 +7,19 @@ namespace GraphT.Graph.Search;
 /// Strategy interface for searching paths within a graph.
 /// </summary>
 /// <typeparam name="T">The type of node values within the graph.</typeparam>
-public interface IGraphSearchStrategy<T> 
+public interface IPathSearchStrategy<T> 
     where T : IEquatable<T>
 {
+    /// <summary>
+    /// Gets the name of the graph search strategy.
+    /// </summary>
+    string Name { get; }
+
+    /// <summary>
+    /// Gets or sets the heuristic function used to estimate the cost of reaching the target node.
+    /// </summary>
+    public Option<Heuristic<T>> Heuristic { get; set; }
+    
     /// <summary>
     /// Executes the graph search algorithm based on the implemented strategy.
     /// </summary>
@@ -18,8 +29,4 @@ public interface IGraphSearchStrategy<T>
     /// <returns>True if the search finds a path to the target node; otherwise, false.</returns>
     bool Run(IPathSearchContext<T> context, out Option<SearchResult<T>> result);
 
-    /// <summary>
-    /// Gets the name of the graph search strategy.
-    /// </summary>
-    string Name { get; }
 }
