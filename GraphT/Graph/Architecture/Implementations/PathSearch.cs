@@ -4,15 +4,29 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Implementations;
 
-internal class PathSearch<T>(IGraphComponents<T> graph) : IPathSearch<T>
+internal class PathSearch<T> : IPathSearch<T>
     where T : IEquatable<T>
 {
+    private readonly IGraphComponents<T> _graph;
+
     // Using Dijkstra as default search strategy
-    public IPathSearchStrategy<T> PathSearchStrategy { get; set; } = new Dijkstra<T>();
+    public IPathSearchStrategy<T> PathSearchStrategy { get; set; }
+
+    public PathSearch(IGraphComponents<T> graph)
+    {
+        _graph = graph;
+        PathSearchStrategy = new Dijkstra<T>(); 
+    }
+    
+    public PathSearch(IGraphComponents<T> graph, IPathSearchStrategy<T> pathSearchStrategy)
+    {
+        _graph = graph;
+        PathSearchStrategy = pathSearchStrategy;
+    }
 
     public bool Search(T start, T target, out Option<SearchResult<T>> result)
     {
-        var context = new PathSearchContext<T>(graph, start, target);
+        var context = new PathSearchContext<T>(_graph, start, target);
         return PathSearchStrategy.Run(context, out result);
     }
 }

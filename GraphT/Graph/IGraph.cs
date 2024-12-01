@@ -49,4 +49,12 @@ public interface IGraph<T>
     /// </summary>
     /// <returns>An <see cref="IPathSearch{T}"/> instance that can be used to perform path search operations on the graph.</returns>
     IPathSearch<T> ToPathSearch();
+
+    /// <summary>
+    /// Transforms the current graph instance into a path search object using a specified path search strategy.
+    /// This allows for execution of search algorithms within the graph using the provided strategy.
+    /// </summary>
+    /// <param name="pathSearchStrategy">The strategy to be used for path searching within the graph.</param>
+    /// <returns>An <see cref="IPathSearch{T}"/> instance configured with the specified strategy for searching paths in the graph.</returns>
+    IPathSearch<T> ToPathSearch(IPathSearchStrategy<T> pathSearchStrategy);
 }

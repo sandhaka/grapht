@@ -22,6 +22,9 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
     public Option<OnVisit<T>> OnVisitActionParameter { get; set; } = Option<OnVisit<T>>.None();
 
     public IPathSearch<T> ToPathSearch() => new PathSearch<T>(this);
+    
+    public IPathSearch<T> ToPathSearch(IPathSearchStrategy<T> pathSearchStrategy) => 
+        new PathSearch<T>(this, pathSearchStrategy);
 
     public void TraverseDfs(T start)
     {

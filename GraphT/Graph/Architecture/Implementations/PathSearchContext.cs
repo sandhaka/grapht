@@ -10,7 +10,7 @@ internal class PathSearchContext<T>(IGraphComponents<T> graphComponents, T start
 {
     public IReadOnlySet<T> NodeValues => graphComponents.NodeValues;
     
-    public void IterateOverNeighbors(T nodeValue, Action<T, decimal> body)
+    public void ForeachNeighbors(T nodeValue, Action<T, decimal> body)
     {
         foreach (var (node, cost) in graphComponents[nodeValue].Neighbors.Span)
             body(node.Value, cost);

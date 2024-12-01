@@ -27,7 +27,7 @@ internal class Dijkstra<T> : IPathSearchStrategy<T>
             var nv = queue.Dequeue();
             visited[nv] = true;
 
-            context.IterateOverNeighbors(nv, (nextValue, cost) =>
+            context.ForeachNeighbors(nv, (nextValue, cost) =>
             {
                 if (visited[nextValue])
                     return;
