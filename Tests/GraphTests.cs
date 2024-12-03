@@ -154,7 +154,6 @@ public class GraphTests(ITestOutputHelper output)
         // Act
         var s = pathSearch.Search("A", "Z", out var result);
         
-        
         // Assert the search result
         var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
         var resultPath = string.Join(',', reducedResult.Path);
@@ -165,5 +164,50 @@ public class GraphTests(ITestOutputHelper output)
         Assert.True(s);
         Assert.Equal("A,B,H,K,Z", resultPath);  
         Assert.Equal(12, reducedResult.TotalCost);
+    }
+    
+    [Fact]
+    public void ShouldSearchShortestPathWithBacktrackingEdgeCaseStartIsTarget()
+    {
+        var problem = new PathProblem();
+        var graph = Graph<string>.CreateReadOnly(problem);
+        var pathSearch = graph.ToPathSearch(new Backtracking<string>());
+        var searchStrategy = pathSearch.PathSearchStrategy;
+        
+        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        
+        // Act
+        var s = pathSearch.Search("A", "A", out var result);
+
+        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
+        var resultPath = string.Join(',', reducedResult.Path);
+        
+        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        
+        // Verify
+        Assert.True(s);
+        Assert.Equal("A", resultPath);
+        Assert.Equal(0, reducedResult.TotalCost);
+    }
+    
+    [Fact]
+    public void ShouldSearchShortestPathWithBacktrackingTargetNotExists()
+    {
+        var problem = new PathProblem();
+        var graph = Graph<string>.CreateReadOnly(problem);
+        var pathSearch = graph.ToPathSearch(new Backtracking<string>());
+        var searchStrategy = pathSearch.PathSearchStrategy;
+        
+        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        
+        // Act
+        var s = pathSearch.Search("A", "U", out var result);
+
+        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
+        var resultPath = string.Join(',', reducedResult.Path);
+        
+        // Verify
+        Assert.False(s);
+        Assert.True(string.IsNullOrEmpty(resultPath));
     }
 }
