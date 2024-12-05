@@ -1,5 +1,6 @@
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.Implementations;
+using GraphT.Graph.Exceptions;
 using GraphT.Problems.Abstractions;
 
 namespace GraphT.Graph;

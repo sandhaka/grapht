@@ -1,5 +1,6 @@
 using GraphT;
 using GraphT.Graph;
+using GraphT.Graph.Exceptions;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using GraphT.Graph.Search.Strategies;

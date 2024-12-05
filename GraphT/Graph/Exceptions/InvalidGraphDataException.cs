@@ -1,6 +1,6 @@
-namespace GraphT;
+namespace GraphT.Graph.Exceptions;
 
-public class InvalidGraphDataException<T> : Exception
+public sealed class InvalidGraphDataException<T> : Exception
 {
     public required T Item { get; init; }
 
