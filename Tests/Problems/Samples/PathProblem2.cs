@@ -4,8 +4,8 @@ namespace Tests.Problems.Samples;
 
 public class PathProblem2 : IGraphProblem<byte>
 {
-    public IDictionary<byte, IEnumerable<(byte Value, decimal Cost)>> AdjacencyList { get; } =
-        new Dictionary<byte, IEnumerable<(byte Value, decimal Cost)>>
+    public IDictionary<byte, List<(byte Value, decimal Cost)>> AdjacencyList { get; } =
+        new Dictionary<byte, List<(byte Value, decimal Cost)>>
         {
             [0] = [(1, 2), (2, 1)],
             [1] = [(2, 3), (3, 4)],

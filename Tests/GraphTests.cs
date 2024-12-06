@@ -211,4 +211,40 @@ public class GraphTests(ITestOutputHelper output)
         Assert.False(s);
         Assert.True(string.IsNullOrEmpty(resultPath));
     }
+    
+    [Fact]
+    public void ShouldSearchShortestPathWithAStar()
+    {
+        var problem = new PathProblem3();
+        var graph = Graph<GeoNodeValue>.CreateReadOnly(problem);
+
+        var pathSearch = graph.ToPathSearch(new AStar<GeoNodeValue>(Heuristic));
+        var searchStrategy = pathSearch.PathSearchStrategy;
+        
+        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        
+        // Act
+        var startNode = problem.Get("Arad");
+        var endNode = problem.Get("Bucharest");
+        var s = pathSearch.Search(startNode, endNode, out var result);
+        
+        var reducedResult = result.Reduce(new SearchResult<GeoNodeValue> { Path = new List<GeoNodeValue>(), TotalCost = 0 });
+        var resultPath = string.Join(',', reducedResult.Path.Select(n => n.Name));
+        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        
+        // Verify
+        Assert.True(s);
+        Assert.Equal("Arad,Sibiu,Rimnicu,Pitesti,Bucharest", resultPath);
+        Assert.Equal(418, reducedResult.TotalCost);
+        return;
+
+        // Define a valid heuristic function for the problem
+        decimal Heuristic(GeoNodeValue node)
+        {
+            var target = problem.Get("Bucharest");
+            var x = node.X - target.X;
+            var y = node.Y - target.Y;
+            return (decimal) Math.Sqrt(x * x + y * y);
+        }
+    }
 }

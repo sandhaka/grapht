@@ -13,8 +13,8 @@ public interface IGraphProblem<T>
     /// </summary>
     /// <value>
     /// A dictionary where the key is a node of type <typeparamref name="T"/>, and the value is
-    /// an enumerable of tuples, each containing a node of type <typeparamref name="T"/> and a
+    /// an list of tuples, each containing a node of type <typeparamref name="T"/> and a
     /// decimal representing the cost.
     /// </value>
-    public IDictionary<T, IEnumerable<(T Value, decimal Cost)>> AdjacencyList { get; }
+    public IDictionary<T, List<(T Value, decimal Cost)>> AdjacencyList { get; }
 }

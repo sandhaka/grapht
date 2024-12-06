@@ -1,3 +1,3 @@
 namespace GraphT.Graph.Parameters;
 
-public delegate int Heuristic<in T>(T node);
+public delegate decimal Heuristic<in T>(T node);

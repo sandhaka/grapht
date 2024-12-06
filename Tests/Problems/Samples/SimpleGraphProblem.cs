@@ -4,8 +4,8 @@ namespace Tests.Problems.Samples;
 
 public class SimpleGraphProblem : IGraphProblem<string>
 {
-    public IDictionary<string, IEnumerable<(string Value, decimal Cost)>> AdjacencyList { get; } = 
-        new Dictionary<string, IEnumerable<(string Value, decimal Cost)>> 
+    public IDictionary<string, List<(string Value, decimal Cost)>> AdjacencyList { get; } = 
+        new Dictionary<string, List<(string Value, decimal Cost)>> 
         {
             ["A"] = [("B", 0), ("C", 0)],
             ["B"] = [("D", 0)],
