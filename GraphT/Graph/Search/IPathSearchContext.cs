@@ -17,7 +17,7 @@ public interface IPathSearchContext<T> where T : IEquatable<T>
     /// </summary>
     /// <param name="nodeValue">The value of the node whose neighbors will be iterated over.</param>
     /// <param name="body">The action to apply to each neighboring node and its associated cost.</param>
-    void ForeachNeighbors(T nodeValue, Action<T, decimal> body); // TODO: Avoid Action allocation.
+    void ForeachNeighbors(T nodeValue, Action<T, decimal> body); // TODO: Avoid Action and closure allocation.
 
     /// <summary>
     /// Gets the starting node value for the path search within the graph.

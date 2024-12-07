@@ -11,7 +11,7 @@ public record GeoNodeValue // Value geo-localized useful to test the heuristic
     public required int Y { get; init; }
 }
 
-public class PathProblem3 : IGraphProblem<GeoNodeValue>
+public class RomaniaMapGraphProblem : IGraphProblem<GeoNodeValue>
 {
     private readonly Dictionary<string, GeoNodeValue> _nodes = new()
     {
@@ -41,7 +41,8 @@ public class PathProblem3 : IGraphProblem<GeoNodeValue>
 
     public IDictionary<GeoNodeValue, List<(GeoNodeValue Value, decimal Cost)>> AdjacencyList
     {
-        get
+        get // Generate a full graph map of Romanian cities,
+            // sample taken from "Artificial Intelligence: A Modern approach" by Peter Norvig
         {
             var map = new Dictionary<GeoNodeValue, List<(GeoNodeValue Value, decimal Cost)>>
             {
@@ -67,6 +68,7 @@ public class PathProblem3 : IGraphProblem<GeoNodeValue>
                 [_nodes["Vaslui"]] = []
             };
 
+            // Build the undirected graph
             foreach (var (n, values) in map)
                 foreach (var ne in values)
                     if(!map[ne.Value].Contains((n, ne.Cost)))

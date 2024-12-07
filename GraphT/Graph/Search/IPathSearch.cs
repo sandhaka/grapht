@@ -19,7 +19,7 @@ public interface IPathSearch<T>
     /// within a graph. This property must implement the <see cref="IPathSearchStrategy{T}"/>
     /// interface, which is designed to encapsulate different pathfinding algorithms or processes.
     /// The chosen strategy affects how the path is calculated or selected, impacting both the
-    /// efficiency and the result of the search operation.
+    /// efficiency and the result of the search operation. Default implementation is Dijkstra algorithm.
     /// </remarks>
     IPathSearchStrategy<T> PathSearchStrategy { get; set; }
 

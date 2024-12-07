@@ -1,9 +1,9 @@
-using GraphT;
 using GraphT.Graph;
 using GraphT.Graph.Exceptions;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using GraphT.Graph.Search.Strategies;
+using GraphT.Problems.Abstractions;
 using Tests.Problems.Samples;
 using Xunit.Abstractions;
 
@@ -12,8 +12,28 @@ namespace Tests;
 public class GraphTests(ITestOutputHelper output)
 {
     private readonly VerifiableTestOutputHelper _output = new(output);
+    
+    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem, IPathSearchStrategy<TNode> searchStrategy) where TNode : IEquatable<TNode>
+    {
+        var graph = Graph<TNode>.CreateReadOnly(problem);
+        var pathSearch = graph.ToPathSearch(searchStrategy);
+        
+        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        
+        return pathSearch;
+    }
+    
+    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem) where TNode : IEquatable<TNode>
+    {
+        var graph = Graph<TNode>.CreateReadOnly(problem);
+        var pathSearch = graph.ToPathSearch();
+        
+        output.WriteLine($"Using {pathSearch.PathSearchStrategy.Name} search strategy.");
+        
+        return pathSearch;
+    }
 
-    [Fact(DisplayName = "Should build a read only graph from a encoded problem.")]
+    [Fact]
     public void ShouldBuildReadOnlyGraph()
     {
         var problem = new SimpleGraphProblem();
@@ -23,7 +43,7 @@ public class GraphTests(ITestOutputHelper output)
         Assert.Equal(problem.AdjacencyList.Keys.Count, graph.NodeValues.Count);
     }
 
-    [Fact(DisplayName = "Should fail to build a read only graph from a encoded problem.")]
+    [Fact]
     public void ShouldFailBuildReadOnlyGraph()
     {
         var problem = new SimpleBuggedGraphProblem();
@@ -31,7 +51,7 @@ public class GraphTests(ITestOutputHelper output)
         Assert.Throws<InvalidGraphDataException<string>>(() => { Graph<string>.CreateReadOnly(problem); });
     }
 
-    [Fact(DisplayName = "Should use an action on graph traversal with DFS.")]
+    [Fact]
     public void ShouldUseAnActionOnGraphTraversalWithDFS()
     {
         var problem = new SimpleGraphProblem();
@@ -52,7 +72,7 @@ public class GraphTests(ITestOutputHelper output)
         Assert.Contains("I'm reached M!", _output.GetOutput());
     }
 
-    [Fact(DisplayName = "Should use an action on graph traversal with BFS.")]
+    [Fact]
     public void ShouldUseAnActionOnGraphTraversalWithBFS()
     {
         var problem = new SimpleGraphProblem();
@@ -74,68 +94,51 @@ public class GraphTests(ITestOutputHelper output)
     }
     
     [Fact]
-    public void ShouldSearchShortestPathWithDijkstra()
+    public void ShouldFindShortestPathWithDijkstra()
     {
         var problem = new PathProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-        var pathSearch = graph.ToPathSearch();
-        var searchStrategy = pathSearch.PathSearchStrategy;
-        
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var pathSearch = PreparePathSearch(problem);
         
         // Act
         var s = pathSearch.Search("A", "Z", out var result);
 
-        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
-        var resultPath = string.Join(',', reducedResult.Path);
+        var resultPath = result.GetPath(out var finalCost);
         
-        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        output.WriteLine($"Reached {resultPath} with cost {finalCost}");
         
         // Verify
         Assert.True(s);
         Assert.Equal("A,B,H,K,Z", resultPath);
-        Assert.Equal(12, reducedResult.TotalCost);
+        Assert.Equal(12, finalCost);
     }
     
     [Fact]
-    public void ShouldSearchShortestPathWithDijkstraEdgeCaseStartIsTarget()
+    public void ShouldFindShortestPathWithDijkstraEdgeCaseStartIsTarget()
     {
         var problem = new PathProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-        var pathSearch = graph.ToPathSearch();
-        var searchStrategy = pathSearch.PathSearchStrategy;
-        
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var pathSearch = PreparePathSearch(problem);
         
         // Act
         var s = pathSearch.Search("A", "A", out var result);
 
-        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
-        var resultPath = string.Join(',', reducedResult.Path);
-        
-        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        var resultPath = result.GetPath(out var finalCost);
         
         // Verify
         Assert.True(s);
         Assert.Equal("A", resultPath);
-        Assert.Equal(0, reducedResult.TotalCost);
+        Assert.Equal(0, finalCost);
     }
     
     [Fact]
-    public void ShouldSearchShortestPathWithDijkstraTargetNotExists()
+    public void ShouldFindShortestPathWithDijkstraTargetNotExists()
     {
         var problem = new PathProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-        var pathSearch = graph.ToPathSearch();
-        var searchStrategy = pathSearch.PathSearchStrategy;
-        
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var pathSearch = PreparePathSearch(problem);
         
         // Act
         var s = pathSearch.Search("A", "U", out var result);
 
-        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
-        var resultPath = string.Join(',', reducedResult.Path);
+        var resultPath = result.GetPath(out _);
         
         // Verify
         Assert.False(s);
@@ -143,89 +146,76 @@ public class GraphTests(ITestOutputHelper output)
     }
 
     [Fact]
-    public void ShouldSearchShortestPathUsingBacktracking()
+    public void ShouldFindShortestPathUsingBacktracking()
     {
         var problem = new PathProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-        var pathSearch = graph.ToPathSearch(new Backtracking<string>());
-        var searchStrategy = pathSearch.PathSearchStrategy;
-        
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var searchStrategy = new Backtracking<string>();
+        var pathSearch = PreparePathSearch(problem, searchStrategy);
         
         // Act
         var s = pathSearch.Search("A", "Z", out var result);
         
-        // Assert the search result
-        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
-        var resultPath = string.Join(',', reducedResult.Path);
+        var resultPath = result.GetPath(out decimal finalCost);
 
-        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        output.WriteLine($"Reached {resultPath} with cost {finalCost}");
 
         // Verify
+        Assert.IsType<Backtracking<string>>(pathSearch.PathSearchStrategy);
         Assert.True(s);
         Assert.Equal("A,B,H,K,Z", resultPath);  
-        Assert.Equal(12, reducedResult.TotalCost);
+        Assert.Equal(12, finalCost);
     }
     
     [Fact]
-    public void ShouldSearchShortestPathWithBacktrackingEdgeCaseStartIsTarget()
+    public void ShouldFindShortestPathWithBacktrackingEdgeCaseStartIsTarget()
     {
         var problem = new PathProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-        var pathSearch = graph.ToPathSearch(new Backtracking<string>());
-        var searchStrategy = pathSearch.PathSearchStrategy;
-        
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var searchStrategy = new Backtracking<string>();
+        var pathSearch = PreparePathSearch(problem, searchStrategy);
         
         // Act
         var s = pathSearch.Search("A", "A", out var result);
 
-        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
-        var resultPath = string.Join(',', reducedResult.Path);
+        var resultPath = result.GetPath(out var finalCost);
         
-        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        output.WriteLine($"Reached {resultPath} with cost {finalCost}");
         
         // Verify
+        Assert.IsType<Backtracking<string>>(pathSearch.PathSearchStrategy);
         Assert.True(s);
         Assert.Equal("A", resultPath);
-        Assert.Equal(0, reducedResult.TotalCost);
+        Assert.Equal(0, finalCost);
     }
     
     [Fact]
-    public void ShouldSearchShortestPathWithBacktrackingTargetNotExists()
+    public void ShouldFindShortestPathWithBacktrackingTargetNotExists()
     {
         var problem = new PathProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-        var pathSearch = graph.ToPathSearch(new Backtracking<string>());
-        var searchStrategy = pathSearch.PathSearchStrategy;
-        
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var searchStrategy = new Backtracking<string>();
+        var pathSearch = PreparePathSearch(problem, searchStrategy);
         
         // Act
         var s = pathSearch.Search("A", "U", out var result);
 
-        var reducedResult = result.Reduce(new SearchResult<string>() { Path = new List<string>(), TotalCost = 0 });
-        var resultPath = string.Join(',', reducedResult.Path);
+        var resultPath = result.GetPath(out _);
         
         // Verify
+        Assert.IsType<Backtracking<string>>(pathSearch.PathSearchStrategy);
         Assert.False(s);
         Assert.True(string.IsNullOrEmpty(resultPath));
     }
     
     [Fact]
-    public void ShouldSearchShortestPathWithAStar()
+    public void ShouldFindShortestPathWithAStar()
     {
-        var problem = new PathProblem3();
-        var graph = Graph<GeoNodeValue>.CreateReadOnly(problem);
-
-        var pathSearch = graph.ToPathSearch(new AStar<GeoNodeValue>(Heuristic));
-        var searchStrategy = pathSearch.PathSearchStrategy;
+        var pathFindingOfRomanianCities = new RomaniaMapGraphProblem();
+        var searchStrategy = new AStar<GeoNodeValue>(Heuristic);
+        var pathSearch = PreparePathSearch(pathFindingOfRomanianCities, searchStrategy);
         
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        var startNode = pathFindingOfRomanianCities.Get("Arad");
+        var endNode = pathFindingOfRomanianCities.Get("Bucharest");
         
         // Act
-        var startNode = problem.Get("Arad");
-        var endNode = problem.Get("Bucharest");
         var s = pathSearch.Search(startNode, endNode, out var result);
         
         var reducedResult = result.Reduce(new SearchResult<GeoNodeValue> { Path = new List<GeoNodeValue>(), TotalCost = 0 });
@@ -233,15 +223,16 @@ public class GraphTests(ITestOutputHelper output)
         output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
         
         // Verify
+        Assert.IsType<AStar<GeoNodeValue>>(pathSearch.PathSearchStrategy);
         Assert.True(s);
         Assert.Equal("Arad,Sibiu,Rimnicu,Pitesti,Bucharest", resultPath);
         Assert.Equal(418, reducedResult.TotalCost);
         return;
 
         // Define a valid heuristic function for the problem
-        decimal Heuristic(GeoNodeValue node)
+        decimal Heuristic(GeoNodeValue node) // TODO: Avoid capturing variable of the target node
         {
-            var target = problem.Get("Bucharest");
+            var target = pathFindingOfRomanianCities.Get("Bucharest"); 
             var x = node.X - target.X;
             var y = node.Y - target.Y;
             return (decimal) Math.Sqrt(x * x + y * y);

@@ -1,6 +1,6 @@
 namespace GraphT.Graph.Exceptions;
 
-public sealed class NoHeuristicDefinedException() : Exception("No heuristic defined for search strategy")
+public sealed class NoHeuristicDefinedException() : Exception("Heuristic is mandatory for this search strategy")
 {
     
 }
