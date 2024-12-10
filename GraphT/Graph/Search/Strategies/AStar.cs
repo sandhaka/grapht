@@ -48,7 +48,7 @@ public class AStar<T> : IPathSearchStrategy<T>
                 var nc = exploredSet[n] + cost;
                 if (nc >= exploredSet[neighbor]) return;
                 exploredSet[neighbor] = nc;
-                var estimatedCost = nc + heuristicFunc(neighbor);
+                var estimatedCost = nc + heuristicFunc(neighbor, context);
                 q.Enqueue(neighbor, estimatedCost);
                 pathMarker[neighbor] = n;
             });

@@ -51,7 +51,7 @@ public class Backtracking<T> : IPathSearchStrategy<T>
             
             path.Add(neighbor);
 
-            Backtrack(context, neighbor, path, newCost);
+            Backtrack(context, neighbor, path, newCost); // Recursion :(
             
             path.RemoveAt(path.Count - 1);
         });

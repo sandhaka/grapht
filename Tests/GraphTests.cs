@@ -230,9 +230,9 @@ public class GraphTests(ITestOutputHelper output)
         return;
 
         // Define a valid heuristic function for the problem
-        decimal Heuristic(GeoNodeValue node) // TODO: Avoid capturing variable of the target node
+        decimal Heuristic(GeoNodeValue node, IPathSearchContext<GeoNodeValue> context)
         {
-            var target = pathFindingOfRomanianCities.Get("Bucharest"); 
+            var target = context.Target;
             var x = node.X - target.X;
             var y = node.Y - target.Y;
             return (decimal) Math.Sqrt(x * x + y * y);
