@@ -1,6 +1,6 @@
 using GraphT.Problems.Abstractions;
 
-namespace Tests.Problems.Samples;
+namespace ProblemSamples;
 
 public class SimpleGraphProblem : IGraphProblem<string>
 {

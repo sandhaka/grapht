@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using GraphT.Problems.Abstractions;
 
-namespace Tests.Problems.Samples;
+namespace ProblemSamples;
 
 [DebuggerDisplay("{Name}")]
 public record GeoNodeValue // Value geo-localized useful to test the heuristic

@@ -4,7 +4,7 @@ using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using GraphT.Graph.Search.Strategies;
 using GraphT.Problems.Abstractions;
-using Tests.Problems.Samples;
+using ProblemSamples;
 using Xunit.Abstractions;
 
 namespace Tests;
@@ -237,5 +237,18 @@ public class GraphTests(ITestOutputHelper output)
             var y = node.Y - target.Y;
             return (decimal) Math.Sqrt(x * x + y * y);
         }
+    }
+
+    [Fact]
+    public void ShouldFindShortestPathInLargeGraphUsedInBenchmarks()
+    {
+        var problem = new LargeGraphProblem();
+        var pathSearch = PreparePathSearch(problem);
+        
+        // Act
+        var s = pathSearch.Search("Node1", "Node100", out _);
+        
+        // Verify
+        Assert.True(s);
     }
 }

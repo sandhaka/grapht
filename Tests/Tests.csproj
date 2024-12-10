@@ -20,6 +20,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\GraphT\GraphT.csproj" />
+      <ProjectReference Include="..\ProblemSamples\ProblemSamples.csproj" />
     </ItemGroup>
 
 </Project>
