@@ -41,17 +41,17 @@ public class AStar<T> : IPathSearchStrategy<T>
 
                 return true;
             }
-            
-            context.ForeachNeighbors(n, (neighbor, cost) =>
+
+            foreach (var (neighbor, cost) in context.Neighbors(n))
             {
                 exploredSet.TryAdd(neighbor, decimal.MaxValue);
                 var nc = exploredSet[n] + cost;
-                if (nc >= exploredSet[neighbor]) return;
+                if (nc >= exploredSet[neighbor]) continue;
                 exploredSet[neighbor] = nc;
                 var estimatedCost = nc + heuristicFunc(neighbor, context);
                 q.Enqueue(neighbor, estimatedCost);
                 pathMarker[neighbor] = n;
-            });
+            }
         }
 
         return false;

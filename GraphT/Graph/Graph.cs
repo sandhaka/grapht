@@ -44,7 +44,7 @@ public static class Graph<T>
                 .Select(x => new Edge<T>(nodes.Single(n => n.Value.Equals(x.Value)), x.Cost))
                 .ToArray();
             
-            node.Neighbors = new Memory<Edge<T>>(edges);
+            node.Edges = new Memory<Edge<T>>(edges);
         }
     }
 

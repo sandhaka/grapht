@@ -13,11 +13,11 @@ public interface IPathSearchContext<T> where T : IEquatable<T>
     IReadOnlySet<T> NodeValues { get; }
 
     /// <summary>
-    /// Iterates over the neighbors of the specified node, applying the specified action to each neighbor.
+    /// Retrieves the neighbors of the specified node and their associated costs.
     /// </summary>
-    /// <param name="nodeValue">The value of the node whose neighbors will be iterated over.</param>
-    /// <param name="body">The action to apply to each neighboring node and its associated cost.</param>
-    void ForeachNeighbors(T nodeValue, Action<T, decimal> body); // TODO: Avoid Action and closure allocation.
+    /// <param name="nodeValue">The value of the node for which neighbors are to be retrieved.</param>
+    /// <returns>A collection of tuples, where each tuple contains a neighbor's value and the cost to reach it.</returns>
+    IEnumerable<(T Value, decimal Cost)> Neighbors(T nodeValue);
 
     /// <summary>
     /// Gets the starting node value for the path search within the graph.

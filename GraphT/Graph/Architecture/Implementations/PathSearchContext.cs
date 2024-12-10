@@ -9,11 +9,27 @@ internal class PathSearchContext<T>(IGraphComponents<T> graphComponents, T start
     where T : IEquatable<T>
 {
     public IReadOnlySet<T> NodeValues => graphComponents.NodeValues;
-    
-    public void ForeachNeighbors(T nodeValue, Action<T, decimal> body)
+
+    public IEnumerable<(T Value, decimal Cost)> Neighbors(T nodeValue)
     {
-        foreach (var (node, cost) in graphComponents[nodeValue].Neighbors.Span)
-            body(node.Value, cost);
+        var node = graphComponents[nodeValue];
+
+        if (!node.HasEdges)
+            yield break;
+        
+        (T nodeValue, decimal cost) tuple = new();
+        
+        var nodeEdges = node.Edges;
+        
+        for (var i = 0; i < nodeEdges.Length; i++)
+        {
+            var span = nodeEdges.Span[i];
+            
+            tuple.nodeValue = span.To.Value;
+            tuple.cost = span.Cost;
+            
+            yield return tuple;
+        }
     }
 
     public required T Start { get; init; } = start;

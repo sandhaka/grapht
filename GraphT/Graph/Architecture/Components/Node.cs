@@ -8,7 +8,7 @@ internal record Node<T>(T Value) where T : IEquatable<T>
 {
     private ValueOption<Memory<Edge<T>>> _neighbors = ValueOption<Memory<Edge<T>>>.None();
     
-    public Memory<Edge<T>> Neighbors
+    public Memory<Edge<T>> Edges
     {
         get => _neighbors.Reduce(Memory<Edge<T>>.Empty);
         set => _neighbors = value.IsEmpty
@@ -16,7 +16,7 @@ internal record Node<T>(T Value) where T : IEquatable<T>
             : ValueOption<Memory<Edge<T>>>.Some(value);
     }
     
-    public bool HasNeighbors => !Neighbors.IsEmpty;
+    public bool HasEdges => !Edges.IsEmpty;
 
     public override int GetHashCode() => Value?.GetHashCode() ?? 0;
 

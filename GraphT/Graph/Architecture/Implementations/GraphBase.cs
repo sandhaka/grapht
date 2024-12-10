@@ -41,11 +41,11 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
             visited.Add(node);
             ActionExecute(node);
             
-            var childrenLength = node.Neighbors.Length;
+            var childrenLength = node.Edges.Length;
             
             for (var i = 0; i < childrenLength; i++)
             {
-                var child = node.Neighbors.Span[i];
+                var child = node.Edges.Span[i];
                 if (visited.Contains(child.To)) 
                     continue;
                 
@@ -68,11 +68,11 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
             
             ActionExecute(node);
             
-            var childrenLength = node.Neighbors.Length;
+            var childrenLength = node.Edges.Length;
             
             for (var i = 0; i < childrenLength; i++)
             {
-                var child = node.Neighbors.Span[i];
+                var child = node.Edges.Span[i];
                 if (!visited.Add(child.To)) 
                     continue;
                 

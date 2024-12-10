@@ -41,11 +41,11 @@ public class Backtracking<T> : IPathSearchStrategy<T>
             
             return;
         }
-        
-        context.ForeachNeighbors(node, (neighbor, cost) =>
+
+        foreach (var (neighbor, cost) in context.Neighbors(node))
         {
             if (path.Contains(neighbor))
-                return; // Avoiding loops
+                continue; // Avoiding loops
 
             var newCost = currentCost + cost;
             
@@ -54,6 +54,6 @@ public class Backtracking<T> : IPathSearchStrategy<T>
             Backtrack(context, neighbor, path, newCost); // Recursion :(
             
             path.RemoveAt(path.Count - 1);
-        });
+        }
     }
 }
