@@ -1,5 +1,6 @@
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
+using GraphT.Graph.Search.Context;
 using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Implementations;
@@ -27,19 +28,22 @@ internal class Dijkstra<T> : IPathSearchStrategy<T>
             var nv = queue.Dequeue();
             visited[nv] = true;
 
-            foreach (var (neighbor, cost) in context.Neighbors(nv))
+            foreach (var edge in context.NodeEdges(nv))
             {
-                if (visited[neighbor])
+                var nodeValue = edge.NodeValue;
+                var cost = edge.Cost;
+                
+                if (visited[nodeValue])
                     continue;
                 
                 var distance = distances[nv] + cost;
 
-                if (distance >= distances[neighbor]) 
+                if (distance >= distances[nodeValue]) 
                     continue;
                 
-                pathMarker[neighbor] = nv;
-                distances[neighbor] = distance;
-                queue.Enqueue(neighbor, distance);
+                pathMarker[nodeValue] = nv;
+                distances[nodeValue] = distance;
+                queue.Enqueue(nodeValue, distance);
             }
 
             if (!nv.Equals(context.Target)) 

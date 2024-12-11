@@ -1,4 +1,4 @@
-namespace GraphT.Graph.Search;
+namespace GraphT.Graph.Search.Context;
 
 /// <summary>
 /// Represents the context required for path search operations within a graph.
@@ -13,11 +13,12 @@ public interface IPathSearchContext<T> where T : IEquatable<T>
     IReadOnlySet<T> NodeValues { get; }
 
     /// <summary>
-    /// Retrieves the neighbors of the specified node and their associated costs.
+    /// Retrieves the edges connected to a specified node in the graph, represented as a collection of EdgeTuple objects.
     /// </summary>
-    /// <param name="nodeValue">The value of the node for which neighbors are to be retrieved.</param>
-    /// <returns>A collection of tuples, where each tuple contains a neighbor's value and the cost to reach it.</returns>
-    IEnumerable<(T Value, decimal Cost)> Neighbors(T nodeValue);
+    /// <typeparam name="T">The type of the node values, which must implement the IEquatable interface.</typeparam>
+    /// <param name="nodeValue">The value of the node for which the edges are to be retrieved.</param>
+    /// <returns>A collection of EdgeTuple objects representing the edges connected to the specified node in the graph.</returns>
+    IEnumerable<EdgeTuple<T>> NodeEdges(T nodeValue);
 
     /// <summary>
     /// Gets the starting node value for the path search within the graph.

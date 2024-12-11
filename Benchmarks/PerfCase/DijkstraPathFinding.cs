@@ -31,9 +31,9 @@ public class DijkstraPathFinding
     }
 }
 
-/* - last run - 
-| Method          | Job      | Runtime  | Mean     | Error    | StdDev   | Gen0      | Gen1     | Allocated |
-|---------------- |--------- |--------- |---------:|---------:|---------:|----------:|---------:|----------:|
-| SubmitBenchmark | .NET 8.0 | .NET 8.0 | 55.76 ms | 0.194 ms | 0.172 ms | 3888.8889 | 111.1111 |  31.85 MB |
-| SubmitBenchmark | .NET 9.0 | .NET 9.0 | 55.38 ms | 1.086 ms | 1.334 ms | 3900.0000 | 100.0000 |  31.85 MB |   
+/* - last run - TODO: move to report or README file
+| Method                  | Job      | Runtime  | Mean     | Error    | StdDev   | Gen0      | Gen1     | Allocated |
+|------------------------ |--------- |--------- |---------:|---------:|---------:|----------:|---------:|----------:|
+| 'Dijkstra Path Finding' | .NET 8.0 | .NET 8.0 | 58.93 ms | 0.263 ms | 0.233 ms | 3888.8889 |        - |  31.09 MB |
+| 'Dijkstra Path Finding' | .NET 9.0 | .NET 9.0 | 55.96 ms | 0.330 ms | 0.276 ms | 3888.8889 | 111.1111 |  31.09 MB |
 */

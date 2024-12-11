@@ -1,4 +1,5 @@
 using GraphT.Graph.Search;
+using GraphT.Graph.Search.Context;
 
 namespace GraphT.Graph.Parameters;
 

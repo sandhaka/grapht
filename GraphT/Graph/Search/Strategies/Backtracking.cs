@@ -1,4 +1,5 @@
 using GraphT.Graph.Parameters;
+using GraphT.Graph.Search.Context;
 using Monads.Optional;
 
 namespace GraphT.Graph.Search.Strategies;
@@ -42,16 +43,19 @@ public class Backtracking<T> : IPathSearchStrategy<T>
             return;
         }
 
-        foreach (var (neighbor, cost) in context.Neighbors(node))
+        foreach (var edge in context.NodeEdges(node))
         {
-            if (path.Contains(neighbor))
+            var nodeValue = edge.NodeValue;
+            var cost = edge.Cost;
+            
+            if (path.Contains(nodeValue))
                 continue; // Avoiding loops
 
             var newCost = currentCost + cost;
             
-            path.Add(neighbor);
+            path.Add(nodeValue);
 
-            Backtrack(context, neighbor, path, newCost); // Recursion :(
+            Backtrack(context, nodeValue, path, newCost); // Recursion :(
             
             path.RemoveAt(path.Count - 1);
         }

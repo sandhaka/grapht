@@ -21,7 +21,7 @@ public class BacktrackingPathFinding
         _pathSearch = graph.ToPathSearch(new Backtracking<string>());
     }
     
-    [Benchmark]
+    [Benchmark(Description = "Simple Backtracking Path Finding")]
     public bool SubmitBenchmark()
     {
         bool result = false;

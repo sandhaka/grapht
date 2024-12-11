@@ -1,5 +1,6 @@
 using GraphT.Graph.Exceptions;
 using GraphT.Graph.Parameters;
+using GraphT.Graph.Search.Context;
 using Monads.Optional;
 
 namespace GraphT.Graph.Search.Strategies;
@@ -15,8 +16,6 @@ public class AStar<T> : IPathSearchStrategy<T>
     {
         Heuristic = heuristic;
     }
-
-    public AStar() { Heuristic = Option<Heuristic<T>>.None(); }
     
     public bool Run(IPathSearchContext<T> context, out Option<SearchResult<T>> result)
     {
@@ -42,15 +41,17 @@ public class AStar<T> : IPathSearchStrategy<T>
                 return true;
             }
 
-            foreach (var (neighbor, cost) in context.Neighbors(n))
+            foreach (var edge in context.NodeEdges(n))
             {
-                exploredSet.TryAdd(neighbor, decimal.MaxValue);
+                var nodeValue = edge.NodeValue;
+                var cost = edge.Cost;
+                exploredSet.TryAdd(nodeValue, decimal.MaxValue);
                 var nc = exploredSet[n] + cost;
-                if (nc >= exploredSet[neighbor]) continue;
-                exploredSet[neighbor] = nc;
-                var estimatedCost = nc + heuristicFunc(neighbor, context);
-                q.Enqueue(neighbor, estimatedCost);
-                pathMarker[neighbor] = n;
+                if (nc >= exploredSet[nodeValue]) continue;
+                exploredSet[nodeValue] = nc;
+                var estimatedCost = nc + heuristicFunc(nodeValue, context);
+                q.Enqueue(nodeValue, estimatedCost);
+                pathMarker[nodeValue] = n;
             }
         }
 
