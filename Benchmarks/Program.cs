@@ -2,4 +2,7 @@
 using BenchmarkDotNet.Running;
 using Benchmarks;
 
-BenchmarkRunner.Run<DijkstraPathFinding>(new BenchmarkConfiguration());
+var configuration = new BenchmarkConfiguration();
+
+BenchmarkRunner.Run<DijkstraPathFinding>(configuration);
+BenchmarkRunner.Run<BacktrackingPathFinding>(configuration);

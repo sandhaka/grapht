@@ -2,6 +2,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using GraphT.Graph;
 using GraphT.Graph.Search;
+using GraphT.Graph.Search.Strategies;
 using ProblemSamples;
 
 namespace Benchmarks.PerfCase;
@@ -9,18 +10,18 @@ namespace Benchmarks.PerfCase;
 [MemoryDiagnoser]
 [SimpleJob(runtimeMoniker: RuntimeMoniker.Net80)]
 [SimpleJob(runtimeMoniker: RuntimeMoniker.Net90)]
-public class DijkstraPathFinding
+public class BacktrackingPathFinding
 {
     private readonly IPathSearch<string> _pathSearch;
 
-    public DijkstraPathFinding()
+    public BacktrackingPathFinding()
     {
         var largePathFindingProblem = new LargeGraphProblem();
         var graph = Graph<string>.CreateReadOnly(largePathFindingProblem);
-        _pathSearch = graph.ToPathSearch();
+        _pathSearch = graph.ToPathSearch(new Backtracking<string>());
     }
     
-    [Benchmark(Description = "Dijkstra Path Finding")]
+    [Benchmark]
     public bool SubmitBenchmark()
     {
         bool result = false;
@@ -30,10 +31,3 @@ public class DijkstraPathFinding
         return result;
     }
 }
-
-/* - last run - 
-| Method          | Job      | Runtime  | Mean     | Error    | StdDev   | Gen0      | Gen1     | Allocated |
-|---------------- |--------- |--------- |---------:|---------:|---------:|----------:|---------:|----------:|
-| SubmitBenchmark | .NET 8.0 | .NET 8.0 | 55.76 ms | 0.194 ms | 0.172 ms | 3888.8889 | 111.1111 |  31.85 MB |
-| SubmitBenchmark | .NET 9.0 | .NET 9.0 | 55.38 ms | 1.086 ms | 1.334 ms | 3900.0000 | 100.0000 |  31.85 MB |   
-*/
