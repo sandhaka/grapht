@@ -1,6 +1,4 @@
 using GraphT.Graph;
-using GraphT.Graph.Exceptions;
-using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using GraphT.Graph.Search.Context;
 using GraphT.Graph.Search.Strategies;
@@ -8,12 +6,12 @@ using GraphT.Problems.Abstractions;
 using ProblemSamples;
 using Xunit.Abstractions;
 
-namespace Tests;
+namespace Tests.Tests.Algorithms;
 
-public class GraphTests(ITestOutputHelper output)
+public class PathFinding(ITestOutputHelper output)
 {
     private readonly VerifiableTestOutputHelper _output = new(output);
-    
+
     private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem, IPathSearchStrategy<TNode> searchStrategy) where TNode : IEquatable<TNode>
     {
         var graph = Graph<TNode>.CreateReadOnly(problem);
@@ -32,66 +30,6 @@ public class GraphTests(ITestOutputHelper output)
         output.WriteLine($"Using {pathSearch.PathSearchStrategy.Name} search strategy.");
         
         return pathSearch;
-    }
-
-    [Fact]
-    public void ShouldBuildReadOnlyGraph()
-    {
-        var problem = new SimpleGraphProblem();
-
-        var graph = Graph<string>.CreateReadOnly(problem);
-
-        Assert.Equal(problem.AdjacencyList.Keys.Count, graph.NodeValues.Count);
-    }
-
-    [Fact]
-    public void ShouldFailBuildReadOnlyGraph()
-    {
-        var problem = new SimpleBuggedGraphProblem();
-
-        Assert.Throws<InvalidGraphDataException<string>>(() => { Graph<string>.CreateReadOnly(problem); });
-    }
-
-    [Fact]
-    public void ShouldUseAnActionOnGraphTraversalWithDFS()
-    {
-        var problem = new SimpleGraphProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-
-        graph.OnVisitActionParameter = new OnVisit<string>(value =>
-        {
-            _output.WriteLine($"Visiting {value}");
-
-            if (value.Equals("M"))
-                _output.WriteLine("I'm reached M!");
-        });
-
-        // Act
-        graph.TraverseDfs("A");
-
-        // Verify
-        Assert.Contains("I'm reached M!", _output.GetOutput());
-    }
-
-    [Fact]
-    public void ShouldUseAnActionOnGraphTraversalWithBFS()
-    {
-        var problem = new SimpleGraphProblem();
-        var graph = Graph<string>.CreateReadOnly(problem);
-
-        graph.OnVisitActionParameter = new OnVisit<string>(value =>
-        {
-            _output.WriteLine($"Visiting {value}");
-
-            if (value.Equals("M"))
-                _output.WriteLine("I'm reached M!");
-        });
-
-        // Act
-        graph.TraverseBfs("A");
-
-        // Verify
-        Assert.Contains("I'm reached M!", _output.GetOutput());
     }
     
     [Fact]

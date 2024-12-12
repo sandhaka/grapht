@@ -20,16 +20,21 @@ public static class Graph<T>
     public static IGraph<T> CreateReadOnly(IGraphProblem<T> problem)
     {
         CheckProblem(problem);
+        var nodes = CreateNodes(problem);
+        var graph = ReadOnlyGraph<T>.Create(nodes);
         
+        return graph;
+    }
+
+    private static HashSet<Node<T>> CreateNodes(IGraphProblem<T> problem)
+    {
         var nodes = problem.AdjacencyList.Keys
             .Select(v => new Node<T>(v))
             .ToHashSet();
         
         SetNeighborhoods(nodes, problem);
         
-        var graph = ReadOnlyGraph<T>.Create(nodes);
-        
-        return graph;
+        return nodes;
     }
     
     private static void SetNeighborhoods(HashSet<Node<T>> nodes, IGraphProblem<T> problem)
