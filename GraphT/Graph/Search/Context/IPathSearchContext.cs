@@ -1,3 +1,5 @@
+using GraphT.Graph.Dto;
+
 namespace GraphT.Graph.Search.Context;
 
 /// <summary>

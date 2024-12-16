@@ -5,7 +5,7 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Implementations;
 
-internal class Dijkstra<T> : IPathSearchStrategy<T>
+internal class Dijkstra<T> : IShortestPathSearchStrategy<T>
     where T : IEquatable<T>
 {
     public string Name => "Dijkstra";

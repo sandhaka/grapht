@@ -15,13 +15,13 @@ public interface IPathSearch<T>
     /// Gets or sets the path search strategy.
     /// </summary>
     /// <remarks>
-    /// The <c>PathSearchStrategy</c> property defines the strategy used for searching paths
-    /// within a graph. This property must implement the <see cref="IPathSearchStrategy{T}"/>
+    /// The <c>ShortestPathSearchStrategy</c> property defines the strategy used for searching paths
+    /// within a graph. This property must implement the <see cref="IShortestPathSearchStrategy{T}"/>
     /// interface, which is designed to encapsulate different pathfinding algorithms or processes.
     /// The chosen strategy affects how the path is calculated or selected, impacting both the
     /// efficiency and the result of the search operation. Default implementation is Dijkstra algorithm.
     /// </remarks>
-    IPathSearchStrategy<T> PathSearchStrategy { get; set; }
+    IShortestPathSearchStrategy<T> ShortestPathSearchStrategy { get; set; }
 
     /// <summary>
     /// Searches for a path from a starting node to a target node in a graph and returns the result of the search.

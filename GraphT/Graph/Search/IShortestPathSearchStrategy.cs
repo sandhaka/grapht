@@ -8,7 +8,7 @@ namespace GraphT.Graph.Search;
 /// Strategy interface for searching paths within a graph.
 /// </summary>
 /// <typeparam name="T">The type of node values within the graph.</typeparam>
-public interface IPathSearchStrategy<T> 
+public interface IShortestPathSearchStrategy<T> 
     where T : IEquatable<T>
 {
     /// <summary>

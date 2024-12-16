@@ -8,5 +8,6 @@ internal interface INodeCollection<T> where T : IEquatable<T>
     int NodesCount { get; }
     T Value(int index);
     bool Contains(T value);
+    Node<T>[] ToArray();
     Node<T> this[T value] { get; }
 }

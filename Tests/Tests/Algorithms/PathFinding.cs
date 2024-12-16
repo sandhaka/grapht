@@ -12,7 +12,7 @@ public class PathFinding(ITestOutputHelper output)
 {
     private readonly VerifiableTestOutputHelper _output = new(output);
 
-    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem, IPathSearchStrategy<TNode> searchStrategy) where TNode : IEquatable<TNode>
+    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem, IShortestPathSearchStrategy<TNode> searchStrategy) where TNode : IEquatable<TNode>
     {
         var graph = Graph<TNode>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch(searchStrategy);
@@ -27,7 +27,7 @@ public class PathFinding(ITestOutputHelper output)
         var graph = Graph<TNode>.CreateReadOnly(problem);
         var pathSearch = graph.ToPathSearch();
         
-        output.WriteLine($"Using {pathSearch.PathSearchStrategy.Name} search strategy.");
+        output.WriteLine($"Using {pathSearch.ShortestPathSearchStrategy.Name} search strategy.");
         
         return pathSearch;
     }
@@ -99,7 +99,7 @@ public class PathFinding(ITestOutputHelper output)
         output.WriteLine($"Reached {resultPath} with cost {finalCost}");
 
         // Verify
-        Assert.IsType<Backtracking<string>>(pathSearch.PathSearchStrategy);
+        Assert.IsType<Backtracking<string>>(pathSearch.ShortestPathSearchStrategy);
         Assert.True(s);
         Assert.Equal("A,B,H,K,Z", resultPath);  
         Assert.Equal(12, finalCost);
@@ -120,7 +120,7 @@ public class PathFinding(ITestOutputHelper output)
         output.WriteLine($"Reached {resultPath} with cost {finalCost}");
         
         // Verify
-        Assert.IsType<Backtracking<string>>(pathSearch.PathSearchStrategy);
+        Assert.IsType<Backtracking<string>>(pathSearch.ShortestPathSearchStrategy);
         Assert.True(s);
         Assert.Equal("A", resultPath);
         Assert.Equal(0, finalCost);
@@ -139,7 +139,7 @@ public class PathFinding(ITestOutputHelper output)
         var resultPath = result.GetPath(out _);
         
         // Verify
-        Assert.IsType<Backtracking<string>>(pathSearch.PathSearchStrategy);
+        Assert.IsType<Backtracking<string>>(pathSearch.ShortestPathSearchStrategy);
         Assert.False(s);
         Assert.True(string.IsNullOrEmpty(resultPath));
     }
@@ -162,7 +162,7 @@ public class PathFinding(ITestOutputHelper output)
         output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
         
         // Verify
-        Assert.IsType<AStar<GeoNodeValue>>(pathSearch.PathSearchStrategy);
+        Assert.IsType<AStar<GeoNodeValue>>(pathSearch.ShortestPathSearchStrategy);
         Assert.True(s);
         Assert.Equal("Arad,Sibiu,Rimnicu,Pitesti,Bucharest", resultPath);
         Assert.Equal(418, reducedResult.TotalCost);

@@ -6,22 +6,27 @@ namespace GraphT.Graph.Architecture.NodeCollections;
 internal abstract class NodesCollectionBase<T> : INodeCollection<T> 
     where T : IEquatable<T>
 {
-    private readonly ISet<Node<T>> _nodes;
+    protected readonly ISet<Node<T>> Nodes;
     
     protected NodesCollectionBase(ISet<Node<T>> nodes)
     {
-        _nodes = nodes;
+        Nodes = nodes;
     }
     
-    public IReadOnlySet<T> Values => _nodes.Select(n => n.Value).ToHashSet();
-    public int NodesCount => _nodes.Count;
-    public T Value(int index) => _nodes.ElementAt(index).Value;
-    public bool Contains(T value) => _nodes.Any(node => node.Value.Equals(value));
+    public IReadOnlySet<T> Values => Nodes.Select(n => n.Value).ToHashSet();
+    public int NodesCount => Nodes.Count;
+    
+    public T Value(int index) => Nodes.ElementAt(index).Value;
+    
+    public bool Contains(T value) => Nodes.Any(node => node.Value.Equals(value));
+    
+    public Node<T>[] ToArray() => Nodes.ToArray();
+
     public Node<T> this[T value]
     {
         get
         {
-            using var enumerator = _nodes.GetEnumerator();
+            using var enumerator = Nodes.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 if (enumerator.Current.Value.Equals(value))

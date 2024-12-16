@@ -10,23 +10,23 @@ internal class PathSearch<T> : IPathSearch<T>
     private readonly IGraphComponents<T> _graph;
 
     // Using Dijkstra as default search strategy
-    public IPathSearchStrategy<T> PathSearchStrategy { get; set; }
+    public IShortestPathSearchStrategy<T> ShortestPathSearchStrategy { get; set; }
 
     public PathSearch(IGraphComponents<T> graph)
     {
         _graph = graph;
-        PathSearchStrategy = new Dijkstra<T>(); 
+        ShortestPathSearchStrategy = new Dijkstra<T>(); 
     }
     
-    public PathSearch(IGraphComponents<T> graph, IPathSearchStrategy<T> pathSearchStrategy)
+    public PathSearch(IGraphComponents<T> graph, IShortestPathSearchStrategy<T> shortestPathSearchStrategy)
     {
         _graph = graph;
-        PathSearchStrategy = pathSearchStrategy;
+        ShortestPathSearchStrategy = shortestPathSearchStrategy;
     }
 
     public bool Search(T start, T target, out Option<SearchResult<T>> result)
     {
         var context = new PathSearchContext<T>(_graph, start, target);
-        return PathSearchStrategy.Run(context, out result);
+        return ShortestPathSearchStrategy.Run(context, out result);
     }
 }

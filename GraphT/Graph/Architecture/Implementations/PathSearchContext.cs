@@ -1,6 +1,7 @@
 using Microsoft.Extensions.ObjectPool;
 using System.Diagnostics.CodeAnalysis;
 using GraphT.Graph.Architecture.Abstractions;
+using GraphT.Graph.Dto;
 using GraphT.Graph.Search.Context;
 
 namespace GraphT.Graph.Architecture.Implementations;

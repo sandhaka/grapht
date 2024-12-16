@@ -5,7 +5,7 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Search.Strategies;
 
-public class AStar<T> : IPathSearchStrategy<T> 
+public class AStar<T> : IShortestPathSearchStrategy<T> 
     where T : IEquatable<T>
 {
     public string Name => "AStar";

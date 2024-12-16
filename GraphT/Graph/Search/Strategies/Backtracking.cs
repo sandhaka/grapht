@@ -4,7 +4,7 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Search.Strategies;
 
-public class Backtracking<T> : IPathSearchStrategy<T> 
+public class Backtracking<T> : IShortestPathSearchStrategy<T> 
     where T : IEquatable<T>
 {
     private decimal _bestCost = decimal.MaxValue;

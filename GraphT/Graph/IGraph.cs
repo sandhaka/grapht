@@ -21,6 +21,30 @@ public interface IGraph<T>
     Option<OnVisit<T>> OnVisitActionParameter { get; set; }
 
     /// <summary>
+    /// Gets the total count of nodes in the graph.
+    /// </summary>
+    /// <remarks>
+    /// This property provides the number of nodes currently present in the graph.
+    /// It can be used to determine the size of the graph or validate operations based on node count.
+    /// </remarks>
+    int NodesCount { get; }
+
+    /// <summary>
+    /// Determines whether the graph contains a node with the specified value.
+    /// </summary>
+    /// <param name="value">The value of the node to search for in the graph.</param>
+    /// <returns>true if the graph contains the node; otherwise, false.</returns>
+    bool ContainsNode(T value);
+
+    /// <summary>
+    /// Determines whether there is a connection between two specified nodes in the graph.
+    /// </summary>
+    /// <param name="start">The starting node.</param>
+    /// <param name="end">The target node.</param>
+    /// <returns>true if the nodes are connected; otherwise, false.</returns>
+    bool AreConnected(T start, T end);
+
+    /// <summary>
     /// Performs a depth-first search (DFS) on a graph starting from the specified node.
     /// The method traverses the graph and optionally executes a specified action on each node encountered.
     /// </summary>
@@ -35,13 +59,10 @@ public interface IGraph<T>
     void TraverseBfs(T start);
 
     /// <summary>
-    /// Retrieves the set of values contained within the nodes of the graph.
+    /// Creates a modifiable version of the current graph.
     /// </summary>
-    /// <remarks>
-    /// This property returns an `ISet` containing the values of all nodes present in the graph's node collection.
-    /// It provides a way to access all distinct node values in the graph.
-    /// </remarks>
-    IReadOnlySet<T> NodeValues { get; }
+    /// <returns>An <see cref="IGraphMod{T}"/> instance that represents a modifiable version of the current graph.</returns>
+    IGraphMod<T> Mod();
 
     /// <summary>
     /// Transforms the current graph instance into a path search object.
@@ -54,7 +75,7 @@ public interface IGraph<T>
     /// Transforms the current graph instance into a path search object using a specified path search strategy.
     /// This allows for execution of search algorithms within the graph using the provided strategy.
     /// </summary>
-    /// <param name="pathSearchStrategy">The strategy to be used for path searching within the graph.</param>
+    /// <param name="shortestPathSearchStrategy">The strategy to be used for path searching within the graph.</param>
     /// <returns>An <see cref="IPathSearch{T}"/> instance configured with the specified strategy for searching paths in the graph.</returns>
-    IPathSearch<T> ToPathSearch(IPathSearchStrategy<T> pathSearchStrategy);
+    IPathSearch<T> ToPathSearch(IShortestPathSearchStrategy<T> shortestPathSearchStrategy);
 }

@@ -1,20 +1,11 @@
 using System.Diagnostics;
-using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Components;
 
 [DebuggerDisplay("{Value}")]
 internal record Node<T>(T Value) where T : IEquatable<T>
 {
-    private ValueOption<Memory<Edge<T>>> _neighbors = ValueOption<Memory<Edge<T>>>.None();
-    
-    public Memory<Edge<T>> Edges
-    {
-        get => _neighbors.Reduce(Memory<Edge<T>>.Empty);
-        set => _neighbors = value.IsEmpty
-            ? ValueOption<Memory<Edge<T>>>.None()
-            : ValueOption<Memory<Edge<T>>>.Some(value);
-    }
+    public Memory<Edge<T>> Edges { get; set; } = Memory<Edge<T>>.Empty;
     
     public bool HasEdges => !Edges.IsEmpty;
 
