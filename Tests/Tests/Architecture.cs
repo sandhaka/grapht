@@ -157,4 +157,19 @@ public class Architecture(ITestOutputHelper output)
         Assert.IsAssignableFrom<IGraph<string>>(graph);
         Assert.False(graph.ContainsNode("Z"));
     }
+
+    [Fact]
+    public void ShouldCannotRemoveANotExistingNode()
+    {
+        var problem = new PathProblem();
+        var graph = Graph<string>.CreateReadOnly(problem);
+        
+        Assert.False(graph.ContainsNode("X"));
+        
+        var editedGraph = graph.Mod().RemoveNode("X").EndMod();
+
+        Assert.NotSame(graph, editedGraph);
+        Assert.False(editedGraph.ContainsNode("X"));
+        Assert.Equal(graph.NodesCount, editedGraph.NodesCount);
+    }
 }
