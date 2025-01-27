@@ -1,6 +1,7 @@
 using GraphT.Graph.Architecture.Abstractions;
 using GraphT.Graph.Architecture.Components;
-using GraphT.Graph.Architecture.NodeCollections.Abstractions;
+using GraphT.Graph.Architecture.NodeCollections;
+using GraphT.Graph.Dto;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using Monads.Optional;
@@ -10,9 +11,9 @@ namespace GraphT.Graph.Architecture.Implementations;
 internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T> 
     where T : IEquatable<T>
 {
-    private readonly INodeCollection<T> _nodesCollection;
+    private readonly FrozenNodeCollection<T> _nodesCollection;
 
-    protected GraphBase(INodeCollection<T> nodesCollection)
+    protected GraphBase(FrozenNodeCollection<T> nodesCollection)
     {
         _nodesCollection = nodesCollection;
     }
@@ -27,6 +28,12 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
     
     public IPathSearch<T> ToPathSearch(IShortestPathSearchStrategy<T> shortestPathSearchStrategy) => 
         new PathSearch<T>(this, shortestPathSearchStrategy);
+
+    public IEnumerable<EdgeData<T>> Mst()
+    {
+        var prims = new Prims<T>(_nodesCollection);
+        return prims.FindMst();
+    }
 
     public int NodesCount => _nodesCollection.NodesCount;
 

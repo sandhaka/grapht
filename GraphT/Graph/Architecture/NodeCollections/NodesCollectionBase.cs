@@ -7,6 +7,7 @@ internal abstract class NodesCollectionBase<T> : INodeCollection<T>
     where T : IEquatable<T>
 {
     protected readonly ISet<Node<T>> Nodes;
+    private readonly Random _random = new();
     
     protected NodesCollectionBase(ISet<Node<T>> nodes)
     {
@@ -36,4 +37,6 @@ internal abstract class NodesCollectionBase<T> : INodeCollection<T>
             throw new InvalidOperationException();
         }
     }
+    
+    public Node<T> RandomNode() => Nodes.ElementAt(_random.Next(NodesCount));
 }

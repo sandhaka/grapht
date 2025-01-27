@@ -172,4 +172,10 @@ public class Architecture(ITestOutputHelper output)
         Assert.False(editedGraph.ContainsNode("X"));
         Assert.Equal(graph.NodesCount, editedGraph.NodesCount);
     }
+
+    [Fact]
+    public void ShouldFindTheMinimumSpanningTree()
+    {
+        
+    }
 }

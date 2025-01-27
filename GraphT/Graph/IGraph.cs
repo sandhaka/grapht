@@ -1,3 +1,4 @@
+using GraphT.Graph.Dto;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
 using Monads.Optional;
@@ -78,4 +79,10 @@ public interface IGraph<T>
     /// <param name="shortestPathSearchStrategy">The strategy to be used for path searching within the graph.</param>
     /// <returns>An <see cref="IPathSearch{T}"/> instance configured with the specified strategy for searching paths in the graph.</returns>
     IPathSearch<T> ToPathSearch(IShortestPathSearchStrategy<T> shortestPathSearchStrategy);
+
+    /// <summary>
+    /// Computes the Minimum Spanning Tree (MST) of the graph using Prim's algorithm.
+    /// </summary>
+    /// <returns>A collection of edges that form the MST, where each edge includes the start node, cost, and end node.</returns>
+    IEnumerable<EdgeData<T>> Mst();
 }
