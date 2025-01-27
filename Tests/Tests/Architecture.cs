@@ -174,8 +174,27 @@ public class Architecture(ITestOutputHelper output)
     }
 
     [Fact]
-    public void ShouldFindTheMinimumSpanningTree()
+    public void ShouldCreateAGraphFromAdjacencyMatrix()
     {
+        var adjacencyMatrix = new decimal[,]
+        {
+            { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+            { 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 },
+            { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0 },
+            { 0, 0, 0, 1, 0, 1, 1, 0, 0, 0 },
+            { 0, 0, 0, 1, 1, 0, 1, 0, 0, 0 },
+            { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }
+        };
         
+        var graph = Graph<int>.CreateReadOnly(adjacencyMatrix, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        
+        Assert.Equal(10, graph.NodesCount);
+        Assert.True(graph.AreConnected(0, 1));
+        Assert.True(graph.AreConnected(2, 6));
+        Assert.True(graph.AreConnected(9, 8));
     }
 }

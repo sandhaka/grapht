@@ -16,4 +16,8 @@ We welcome contributions from the community. To contribute, please fork the repo
 
 This project is licensed under the Apache License - see the [LICENSE](LICENSE) file for details.
 
+## Private Dependencies
+
+- [monads 1.2.0](https://github.com/sandhaka/monads/pkgs/nuget/monads)
+
 </samp>

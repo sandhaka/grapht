@@ -26,6 +26,42 @@ public static class Graph<T>
         return graph;
     }
 
+    public static IGraph<T> CreateReadOnly(decimal[,] matrix, T[] nodeValues)
+    {
+        var nodes = ParseMatrix(matrix, nodeValues).ToHashSet();
+        var graph = ReadOnlyGraph<T>.Create(nodes);
+        
+        return graph;
+    }
+
+    private static IEnumerable<Node<T>> ParseMatrix(decimal[,] matrix, T[] nodeValues)
+    {
+        var weights = nodeValues.ToDictionary(v => v, v => 0m);
+        
+        for (var i = 0; i < matrix.GetLength(0); i++)
+        {
+            for (var j = 0; j < matrix.GetLength(1); j++)
+            {
+                var w = matrix[i, j];
+                if (w == 0) continue;
+                weights[nodeValues[j]] = w;
+            }
+
+            var edges = weights
+                .Where(w => w.Value > 0)
+                .Select(e => new Edge<T>(new Node<T>(e.Key), e.Value))
+                .ToArray();
+            
+            var node = new Node<T>(nodeValues[i])
+            {
+                Edges = new Memory<Edge<T>>(edges)
+            };
+            yield return node; 
+            
+            weights.Clear();
+        }
+    }
+
     private static HashSet<Node<T>> CreateNodes(IGraphProblem<T> problem)
     {
         var nodes = problem.AdjacencyList.Keys
