@@ -3,7 +3,7 @@ using GraphT.Graph.Dto;
 using GraphT.Graph.Exceptions;
 using GraphT.Graph.Parameters;
 using Monads.Optional;
-using ProblemSamples;
+using GraphSamples;
 using Xunit.Abstractions;
 
 namespace Tests.Tests;
@@ -15,7 +15,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldBuildReadOnlyGraph()
     {
-        var problem = new SimpleGraphProblem();
+        var problem = new SimpleGraphModel();
 
         var graph = Graph<string>.CreateReadOnly(problem);
 
@@ -25,7 +25,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldFailBuildReadOnlyGraph()
     {
-        var problem = new SimpleBuggedGraphProblem();
+        var problem = new SimpleBuggedGraphModel();
 
         Assert.Throws<InvalidGraphDataException<string>>(() => { Graph<string>.CreateReadOnly(problem); });
     }
@@ -33,7 +33,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldUseAnActionOnGraphTraversalWithDFS()
     {
-        var problem = new SimpleGraphProblem();
+        var problem = new SimpleGraphModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
         graph.OnVisitActionParameter = new OnVisit<string>(value =>
@@ -54,7 +54,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldUseAnActionOnGraphTraversalWithBFS()
     {
-        var problem = new SimpleGraphProblem();
+        var problem = new SimpleGraphModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
         graph.OnVisitActionParameter = new OnVisit<string>(value =>
@@ -75,7 +75,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldDetermineIfAPathExists()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem);
         
         var areConnected = graph.AreConnected("A", "Z");
@@ -86,7 +86,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldAddANodeToAGraph()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
         graph.OnVisitActionParameter = new OnVisit<string>(value =>
@@ -121,7 +121,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldFailToAddAnOrphanNode()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
         var exception1 = Assert.Throws<ArgumentException>(() =>
@@ -135,7 +135,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldFailToAddANodeWithInvalidEdges()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
         var exception1 = Assert.Throws<ArgumentException>(() =>
@@ -150,7 +150,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldRemoveANodeToAGraph()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem)
             .Mod().RemoveNode("Z").EndMod();
 
@@ -161,7 +161,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldCannotRemoveANotExistingNode()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem);
         
         Assert.False(graph.ContainsNode("X"));
@@ -176,21 +176,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldCreateAGraphFromAdjacencyMatrix()
     {
-        var adjacencyMatrix = new decimal[,]
-        {
-            { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
-            { 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 },
-            { 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 },
-            { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0 },
-            { 0, 0, 0, 1, 0, 1, 1, 0, 0, 0 },
-            { 0, 0, 0, 1, 1, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
-            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
-            { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }
-        };
-        
-        var graph = Graph<int>.CreateReadOnly(adjacencyMatrix, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        var graph = Graph<int>.CreateReadOnly(new SccGraphModel1());
         
         Assert.Equal(10, graph.NodesCount);
         Assert.True(graph.AreConnected(0, 1));
@@ -201,21 +187,7 @@ public class Architecture(ITestOutputHelper output)
     [Fact]
     public void ShouldFindTheMinimumSpanningTree()
     {
-        var adjacencyMatrix = new decimal[,]
-        {
-            { 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 },
-            { 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 },
-            { 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 },
-            { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0 },
-            { 0, 0, 0, 1, 0, 1, 1, 0, 0, 0 },
-            { 0, 0, 0, 1, 1, 0, 1, 0, 0, 0 },
-            { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
-            { 0, 1, 0, 1, 0, 0, 0, 0, 1, 1 },
-            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
-            { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }
-        };
-        
-        var graph = Graph<int>.CreateReadOnly(adjacencyMatrix, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        var graph = Graph<int>.CreateReadOnly(new SccGraphModel2());
 
         var minimumSpanningTree = graph.Mst().ToArray();
         

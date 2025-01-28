@@ -2,7 +2,7 @@ using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Jobs;
 using GraphT.Graph;
 using GraphT.Graph.Search;
-using ProblemSamples;
+using GraphSamples;
 
 namespace Benchmarks.PerfCase;
 
@@ -15,7 +15,7 @@ public class DijkstraPathFinding
 
     public DijkstraPathFinding()
     {
-        var largePathFindingProblem = new LargeGraphProblem();
+        var largePathFindingProblem = new LargeGraphListModel();
         var graph = Graph<string>.CreateReadOnly(largePathFindingProblem);
         _pathSearch = graph.ToPathSearch();
     }

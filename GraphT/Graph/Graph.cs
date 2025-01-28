@@ -1,7 +1,7 @@
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.Implementations;
-using GraphT.Graph.Exceptions;
-using GraphT.Problems.Abstractions;
+using GraphT.Models.Abstractions;
+using GraphT.Models.Validators;
 
 namespace GraphT.Graph;
 
@@ -13,35 +13,38 @@ public static class Graph<T>
     where T : IEquatable<T>
 {
     /// <summary>
-    /// Creates a read-only graph from the given problem.
+    /// Creates a read-only graph from the given model.
     /// </summary>
-    /// <param name="problem">The graph problem containing the adjacency list</param>
-    /// <returns>A read-only graph constructed from the problem</returns>
-    public static IGraph<T> CreateReadOnly(IGraphProblem<T> problem)
+    /// <param name="listModel">The graph model containing the adjacency list</param>
+    /// <returns>A read-only graph constructed from the model</returns>
+    public static IGraph<T> CreateReadOnly(IGraphListModel<T> listModel)
     {
-        CheckProblem(problem);
-        var nodes = CreateNodes(problem);
+        listModel.Validate();
+        var nodes = CreateNodes(listModel);
         var graph = ReadOnlyGraph<T>.Create(nodes);
         
         return graph;
     }
 
     /// <summary>
-    /// Creates a read-only graph from the specified adjacency matrix and corresponding node values.
+    /// Creates a read-only graph from the specified adjacency matrix model.
     /// </summary>
-    /// <param name="matrix">A two-dimensional decimal array representing the adjacency matrix of the graph.</param>
-    /// <param name="nodeValues">An array containing the values of the nodes in the graph.</param>
-    /// <returns>A read-only graph constructed from the given adjacency matrix and node values.</returns>
-    public static IGraph<T> CreateReadOnly(decimal[,] matrix, T[] nodeValues)
+    /// <param name="matrixModel">The graph model containing the adjacency matrix and associated node values.</param>
+    /// <returns>A read-only graph constructed from the adjacency matrix model.</returns>
+    public static IGraph<T> CreateReadOnly(IGraphMatrixModel<T> matrixModel)
     {
-        var nodes = ParseMatrix(matrix, nodeValues).ToHashSet();
+        matrixModel.Validate();
+        var matrix = matrixModel.Matrix;
+        var nodeValues = matrixModel.Nodes;
+        var nodes = ParseMatrix(matrix, nodeValues);
         var graph = ReadOnlyGraph<T>.Create(nodes);
         
         return graph;
     }
 
-    private static IEnumerable<Node<T>> ParseMatrix(decimal[,] matrix, T[] nodeValues)
+    private static HashSet<Node<T>> ParseMatrix(decimal[,] matrix, T[] nodeValues)
     {
+        var set = new HashSet<Node<T>>();
         var nodes = nodeValues.ToDictionary(v => v, v => new Node<T>(v)); // Map values to nodes
         var weights = nodeValues.ToDictionary(v => v, v => 0m); // Temporary storing weights
         
@@ -63,28 +66,30 @@ public static class Graph<T>
             
             node.Edges = new Memory<Edge<T>>(edges);
             
-            yield return node; 
+            set.Add(node); 
             
             weights.Clear();
         }
+
+        return set;
     }
 
-    private static HashSet<Node<T>> CreateNodes(IGraphProblem<T> problem)
+    private static HashSet<Node<T>> CreateNodes(IGraphListModel<T> listModel)
     {
-        var nodes = problem.AdjacencyList.Keys
+        var nodes = listModel.AdjacencyList.Keys
             .Select(v => new Node<T>(v))
             .ToHashSet();
         
-        SetNeighborhoods(nodes, problem);
+        SetNeighborhoods(nodes, listModel);
         
         return nodes;
     }
     
-    private static void SetNeighborhoods(HashSet<Node<T>> nodes, IGraphProblem<T> problem)
+    private static void SetNeighborhoods(HashSet<Node<T>> nodes, IGraphListModel<T> listModel)
     {
-        for (var i = 0; i < problem.AdjacencyList.Count; i++)
+        for (var i = 0; i < listModel.AdjacencyList.Count; i++)
         {
-            var (entryKey, neighborValues) = problem.AdjacencyList.ElementAt(i);
+            var (entryKey, neighborValues) = listModel.AdjacencyList.ElementAt(i);
             
             var node = nodes.Single(n => n.Value.Equals(entryKey));
             
@@ -93,17 +98,6 @@ public static class Graph<T>
                 .ToArray();
             
             node.Edges = new Memory<Edge<T>>(edges);
-        }
-    }
-
-    private static void CheckProblem(IGraphProblem<T> problem)
-    {
-        // Check if all edges are valid
-        var edges = problem.AdjacencyList;
-        foreach (var edge in edges)
-        {
-            if (edge.Value.Any(ev => !edges.ContainsKey(ev.Value)))
-                throw new InvalidGraphDataException<T> { Item = edge.Key };
         }
     }
 }

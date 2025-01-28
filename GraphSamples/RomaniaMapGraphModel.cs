@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using GraphT.Problems.Abstractions;
+using GraphT.Models.Abstractions;
 
-namespace ProblemSamples;
+namespace GraphSamples;
 
 [DebuggerDisplay("{Name}")]
 public record GeoNodeValue // Value geo-localized useful to test the heuristic
@@ -11,7 +11,7 @@ public record GeoNodeValue // Value geo-localized useful to test the heuristic
     public required int Y { get; init; }
 }
 
-public class RomaniaMapGraphProblem : IGraphProblem<GeoNodeValue>
+public class RomaniaMapGraphModel : IGraphListModel<GeoNodeValue>
 {
     private readonly Dictionary<string, GeoNodeValue> _nodes = new()
     {

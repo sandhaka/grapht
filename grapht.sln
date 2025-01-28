@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{BF0743B9-40F6-4702-848D-6A41C71B4064}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProblemSamples", "ProblemSamples\ProblemSamples.csproj", "{655F5E8A-69DD-41F1-805A-8D0B50EC9683}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphSamples", "GraphSamples\GraphSamples.csproj", "{655F5E8A-69DD-41F1-805A-8D0B50EC9683}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

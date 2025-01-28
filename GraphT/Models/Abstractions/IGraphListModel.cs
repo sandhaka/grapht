@@ -1,10 +1,10 @@
-namespace GraphT.Problems.Abstractions;
+namespace GraphT.Models.Abstractions;
 
 /// <summary>
-/// Represents a generic graph problem.
+/// Represents a generic graph model using an adjacency list.
 /// </summary>
 /// <typeparam name="T">The type of the elements in the graph, typically vertices or nodes.</typeparam>
-public interface IGraphProblem<T>
+public interface IGraphListModel<T> where T : IEquatable<T>
 {
     /// <summary>
     /// Gets the adjacency list representing the graph. The adjacency list is a dictionary

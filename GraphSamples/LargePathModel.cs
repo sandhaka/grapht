@@ -1,8 +1,8 @@
-using GraphT.Problems.Abstractions;
+using GraphT.Models.Abstractions;
 
-namespace ProblemSamples;
+namespace GraphSamples;
 
-public class LargeGraphProblem : IGraphProblem<string>
+public class LargeGraphListModel : IGraphListModel<string>
 {
     public IDictionary<string, List<(string Value, decimal Cost)>> AdjacencyList =>
         new Dictionary<string, List<(string Value, decimal Cost)>>

@@ -2,8 +2,8 @@ using GraphT.Graph;
 using GraphT.Graph.Search;
 using GraphT.Graph.Search.Context;
 using GraphT.Graph.Search.Strategies;
-using GraphT.Problems.Abstractions;
-using ProblemSamples;
+using GraphT.Models.Abstractions;
+using GraphSamples;
 using Xunit.Abstractions;
 
 namespace Tests.Tests.Algorithms;
@@ -12,9 +12,9 @@ public class PathFinding(ITestOutputHelper output)
 {
     private readonly VerifiableTestOutputHelper _output = new(output);
 
-    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem, IShortestPathSearchStrategy<TNode> searchStrategy) where TNode : IEquatable<TNode>
+    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphListModel<TNode> listModel, IShortestPathSearchStrategy<TNode> searchStrategy) where TNode : IEquatable<TNode>
     {
-        var graph = Graph<TNode>.CreateReadOnly(problem);
+        var graph = Graph<TNode>.CreateReadOnly(listModel);
         var pathSearch = graph.ToPathSearch(searchStrategy);
         
         output.WriteLine($"Using {searchStrategy.Name} search strategy.");
@@ -22,9 +22,9 @@ public class PathFinding(ITestOutputHelper output)
         return pathSearch;
     }
     
-    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphProblem<TNode> problem) where TNode : IEquatable<TNode>
+    private IPathSearch<TNode> PreparePathSearch<TNode>(IGraphListModel<TNode> listModel) where TNode : IEquatable<TNode>
     {
-        var graph = Graph<TNode>.CreateReadOnly(problem);
+        var graph = Graph<TNode>.CreateReadOnly(listModel);
         var pathSearch = graph.ToPathSearch();
         
         output.WriteLine($"Using {pathSearch.ShortestPathSearchStrategy.Name} search strategy.");
@@ -35,7 +35,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathWithDijkstra()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var pathSearch = PreparePathSearch(problem);
         
         // Act
@@ -54,7 +54,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathWithDijkstraEdgeCaseStartIsTarget()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var pathSearch = PreparePathSearch(problem);
         
         // Act
@@ -71,7 +71,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathWithDijkstraTargetNotExists()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var pathSearch = PreparePathSearch(problem);
         
         // Act
@@ -87,7 +87,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathUsingBacktracking()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var searchStrategy = new Backtracking<string>();
         var pathSearch = PreparePathSearch(problem, searchStrategy);
         
@@ -108,7 +108,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathWithBacktrackingEdgeCaseStartIsTarget()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var searchStrategy = new Backtracking<string>();
         var pathSearch = PreparePathSearch(problem, searchStrategy);
         
@@ -129,7 +129,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathWithBacktrackingTargetNotExists()
     {
-        var problem = new PathProblem();
+        var problem = new PathModel();
         var searchStrategy = new Backtracking<string>();
         var pathSearch = PreparePathSearch(problem, searchStrategy);
         
@@ -147,7 +147,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathWithAStar()
     {
-        var pathFindingOfRomanianCities = new RomaniaMapGraphProblem();
+        var pathFindingOfRomanianCities = new RomaniaMapGraphModel();
         var searchStrategy = new AStar<GeoNodeValue>(Heuristic);
         var pathSearch = PreparePathSearch(pathFindingOfRomanianCities, searchStrategy);
         
@@ -168,7 +168,7 @@ public class PathFinding(ITestOutputHelper output)
         Assert.Equal(418, reducedResult.TotalCost);
         return;
 
-        // Define a valid heuristic function for the problem
+        // Define a valid heuristic function for the model
         decimal Heuristic(GeoNodeValue node, IPathSearchContext<GeoNodeValue> context)
         {
             var target = context.Target;
@@ -181,7 +181,7 @@ public class PathFinding(ITestOutputHelper output)
     [Fact]
     public void ShouldFindShortestPathInLargeGraphUsedInBenchmarks()
     {
-        var problem = new LargeGraphProblem();
+        var problem = new LargeGraphListModel();
         var pathSearch = PreparePathSearch(problem);
         
         // Act
