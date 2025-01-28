@@ -26,6 +26,12 @@ public static class Graph<T>
         return graph;
     }
 
+    /// <summary>
+    /// Creates a read-only graph from the specified adjacency matrix and corresponding node values.
+    /// </summary>
+    /// <param name="matrix">A two-dimensional decimal array representing the adjacency matrix of the graph.</param>
+    /// <param name="nodeValues">An array containing the values of the nodes in the graph.</param>
+    /// <returns>A read-only graph constructed from the given adjacency matrix and node values.</returns>
     public static IGraph<T> CreateReadOnly(decimal[,] matrix, T[] nodeValues)
     {
         var nodes = ParseMatrix(matrix, nodeValues).ToHashSet();
@@ -36,26 +42,27 @@ public static class Graph<T>
 
     private static IEnumerable<Node<T>> ParseMatrix(decimal[,] matrix, T[] nodeValues)
     {
-        var weights = nodeValues.ToDictionary(v => v, v => 0m);
+        var nodes = nodeValues.ToDictionary(v => v, v => new Node<T>(v)); // Map values to nodes
+        var weights = nodeValues.ToDictionary(v => v, v => 0m); // Temporary storing weights
         
         for (var i = 0; i < matrix.GetLength(0); i++)
         {
             for (var j = 0; j < matrix.GetLength(1); j++)
             {
                 var w = matrix[i, j];
-                if (w == 0) continue;
+                if (w == 0) continue; // No connected
                 weights[nodeValues[j]] = w;
             }
 
             var edges = weights
                 .Where(w => w.Value > 0)
-                .Select(e => new Edge<T>(new Node<T>(e.Key), e.Value))
+                .Select(e => new Edge<T>(nodes[e.Key], e.Value))
                 .ToArray();
             
-            var node = new Node<T>(nodeValues[i])
-            {
-                Edges = new Memory<Edge<T>>(edges)
-            };
+            var node = nodes[nodeValues[i]];
+            
+            node.Edges = new Memory<Edge<T>>(edges);
+            
             yield return node; 
             
             weights.Clear();

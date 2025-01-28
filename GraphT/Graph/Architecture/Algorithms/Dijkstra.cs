@@ -3,7 +3,7 @@ using GraphT.Graph.Search;
 using GraphT.Graph.Search.Context;
 using Monads.Optional;
 
-namespace GraphT.Graph.Architecture.Implementations;
+namespace GraphT.Graph.Architecture.Algorithms;
 
 internal class Dijkstra<T> : IShortestPathSearchStrategy<T>
     where T : IEquatable<T>

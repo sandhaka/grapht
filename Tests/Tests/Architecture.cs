@@ -197,4 +197,35 @@ public class Architecture(ITestOutputHelper output)
         Assert.True(graph.AreConnected(2, 6));
         Assert.True(graph.AreConnected(9, 8));
     }
+
+    [Fact]
+    public void ShouldFindTheMinimumSpanningTree()
+    {
+        var adjacencyMatrix = new decimal[,]
+        {
+            { 0, 1, 1, 1, 0, 1, 0, 0, 0, 0 },
+            { 1, 0, 1, 0, 1, 0, 0, 0, 0, 0 },
+            { 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 },
+            { 1, 0, 0, 0, 1, 1, 1, 1, 0, 0 },
+            { 0, 0, 0, 1, 0, 1, 1, 0, 0, 0 },
+            { 0, 0, 0, 1, 1, 0, 1, 0, 0, 0 },
+            { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0 },
+            { 0, 1, 0, 1, 0, 0, 0, 0, 1, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0 }
+        };
+        
+        var graph = Graph<int>.CreateReadOnly(adjacencyMatrix, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+        var minimumSpanningTree = graph.Mst().ToArray();
+        
+        var mstNodes = minimumSpanningTree.SelectMany(edge => new[] { edge.From, edge.To }).Distinct();
+        Assert.Equal(graph.NodesCount, mstNodes.Count());
+
+        foreach (var edge in minimumSpanningTree)
+        {
+            Assert.True(graph.AreConnected(edge.From, edge.To), 
+                $"Edge from {edge.From} to {edge.To} is not valid in the graph.");
+        }
+    }
 }

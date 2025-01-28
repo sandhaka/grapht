@@ -1,4 +1,5 @@
 using GraphT.Graph.Architecture.Abstractions;
+using GraphT.Graph.Architecture.Algorithms;
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.NodeCollections;
 using GraphT.Graph.Dto;
