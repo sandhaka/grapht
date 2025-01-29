@@ -23,4 +23,8 @@
       <ProjectReference Include="..\GraphSamples\GraphSamples.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Tests\Extensions\" />
+    </ItemGroup>
+
 </Project>

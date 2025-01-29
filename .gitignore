@@ -484,3 +484,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Ignore testing file
+Tests/Scripts/graph.csv
+Tests/Scripts/sparse_graph.csv

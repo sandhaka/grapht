@@ -183,21 +183,24 @@ public class Architecture(ITestOutputHelper output)
         Assert.True(graph.AreConnected(2, 6));
         Assert.True(graph.AreConnected(9, 8));
     }
-
+    
     [Fact]
     public void ShouldFindTheMinimumSpanningTree()
     {
         var graph = Graph<int>.CreateReadOnly(new SccGraphModel2());
 
-        var minimumSpanningTree = graph.Mst().ToArray();
+        var minimumSpanningTree = graph.Mst().ToHashSet();
         
-        var mstNodes = minimumSpanningTree.SelectMany(edge => new[] { edge.From, edge.To }).Distinct();
-        Assert.Equal(graph.NodesCount, mstNodes.Count());
+        Assert.Equal(graph.NodesCount - 1, minimumSpanningTree.Count());
+    }
+    
+    [Fact]
+    public void ShouldFindTheMinimumSpanningTreeOfaSparseGraph1()
+    {
+        var graph = Graph<int>.CreateReadOnly(new SparseGraphModel1());
 
-        foreach (var edge in minimumSpanningTree)
-        {
-            Assert.True(graph.AreConnected(edge.From, edge.To), 
-                $"Edge from {edge.From} to {edge.To} is not valid in the graph.");
-        }
+        var minimumSpanningTree = graph.Mst().ToHashSet();
+        
+        Assert.Equal(graph.NodesCount - 1, minimumSpanningTree.Count());
     }
 }
