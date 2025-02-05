@@ -17,7 +17,7 @@ public class PathFinding(ITestOutputHelper output)
         var graph = Graph<TNode>.CreateReadOnly(listModel);
         var pathSearch = graph.ToPathSearch(searchStrategy);
         
-        output.WriteLine($"Using {searchStrategy.Name} search strategy.");
+        _output.WriteLine($"Using {searchStrategy.Name} search strategy.");
         
         return pathSearch;
     }
@@ -27,7 +27,7 @@ public class PathFinding(ITestOutputHelper output)
         var graph = Graph<TNode>.CreateReadOnly(listModel);
         var pathSearch = graph.ToPathSearch();
         
-        output.WriteLine($"Using {pathSearch.ShortestPathSearchStrategy.Name} search strategy.");
+        _output.WriteLine($"Using {pathSearch.ShortestPathSearchStrategy.Name} search strategy.");
         
         return pathSearch;
     }
@@ -43,7 +43,7 @@ public class PathFinding(ITestOutputHelper output)
 
         var resultPath = result.GetPath(out var finalCost);
         
-        output.WriteLine($"Reached {resultPath} with cost {finalCost}");
+        _output.WriteLine($"Reached {resultPath} with cost {finalCost}");
         
         // Verify
         Assert.True(s);
@@ -96,7 +96,7 @@ public class PathFinding(ITestOutputHelper output)
         
         var resultPath = result.GetPath(out decimal finalCost);
 
-        output.WriteLine($"Reached {resultPath} with cost {finalCost}");
+        _output.WriteLine($"Reached {resultPath} with cost {finalCost}");
 
         // Verify
         Assert.IsType<Backtracking<string>>(pathSearch.ShortestPathSearchStrategy);
@@ -117,7 +117,7 @@ public class PathFinding(ITestOutputHelper output)
 
         var resultPath = result.GetPath(out var finalCost);
         
-        output.WriteLine($"Reached {resultPath} with cost {finalCost}");
+        _output.WriteLine($"Reached {resultPath} with cost {finalCost}");
         
         // Verify
         Assert.IsType<Backtracking<string>>(pathSearch.ShortestPathSearchStrategy);
@@ -159,7 +159,7 @@ public class PathFinding(ITestOutputHelper output)
         
         var reducedResult = result.Reduce(new SearchResult<GeoNodeValue> { Path = new List<GeoNodeValue>(), TotalCost = 0 });
         var resultPath = string.Join(',', reducedResult.Path.Select(n => n.Name));
-        output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
+        _output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
         
         // Verify
         Assert.IsType<AStar<GeoNodeValue>>(pathSearch.ShortestPathSearchStrategy);
