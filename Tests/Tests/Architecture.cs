@@ -183,4 +183,20 @@ public class Architecture(ITestOutputHelper output)
         Assert.True(graph.AreConnected(2, 6));
         Assert.True(graph.AreConnected(9, 8));
     }
+    
+    [Fact]
+    public void ShouldGraphBeUndirected()
+    {
+        var graph = Graph<int>.CreateReadOnly(new SparseUndirectedGraphModel1());
+        
+        Assert.True(graph.IsUndirected());
+    }
+
+    [Fact]
+    public void ShouldFindACycle()
+    {
+        var graph = Graph<int>.CreateReadOnly(new SparseUndirectedGraphModel1());
+        
+        Assert.True(graph.IsCyclic());
+    }
 }

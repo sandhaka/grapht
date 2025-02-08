@@ -31,6 +31,17 @@ public interface IGraph<T>
     int NodesCount { get; }
 
     /// <summary>
+    /// Gets the total number of edges in the graph.
+    /// </summary>
+    /// <remarks>
+    /// This property represents the count of all edges present in the graph, which may vary
+    /// based on the specific implementation and graph type (directed or undirected).
+    /// For an undirected graph, each edge is counted once, whereas in a directed graph,
+    /// the edge direction is taken into account.
+    /// </remarks>
+    int EdgesCount { get; }
+
+    /// <summary>
     /// Determines whether the graph contains a node with the specified value.
     /// </summary>
     /// <param name="value">The value of the node to search for in the graph.</param>
@@ -81,8 +92,25 @@ public interface IGraph<T>
     IPathSearch<T> ToPathSearch(IShortestPathSearchStrategy<T> shortestPathSearchStrategy);
 
     /// <summary>
-    /// Computes the Minimum Spanning Tree (MST) of the graph using Prim's algorithm.
+    /// Reduces the current graph to its Minimum Spanning Tree (MST).
     /// </summary>
-    /// <returns>A collection of edges that form the MST, where each edge includes the start node, cost, and end node.</returns>
-    IEnumerable<EdgeData<T>> Mst();
+    /// <returns>
+    /// A new graph that represents the Minimum Spanning Tree of the current graph.
+    /// If an MST cannot be formed, returns the current graph.
+    /// </returns>
+    IGraph<T> ReduceToMst();
+
+    /// <summary>
+    /// Determines whether the graph contains any cycles.
+    /// </summary>
+    /// <returns>true if the graph contains a cycle; otherwise, false.</returns>
+    bool IsCyclic();
+    
+    /// <summary>
+    /// Determines whether the graph is undirected
+    /// </summary>
+    /// <returns>true if the graph is undirected; otherwise, false.</returns>
+    bool IsUndirected();
+    
+    IReadOnlyList<EdgeData<T>> AllEdges();
 }

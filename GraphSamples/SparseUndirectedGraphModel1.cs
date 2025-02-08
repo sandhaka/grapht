@@ -2,7 +2,7 @@ using GraphT.Models.Abstractions;
 
 namespace GraphSamples;
 
-public class SparseGraphModel1 : IGraphMatrixModel<int>
+public class SparseUndirectedGraphModel1 : IGraphMatrixModel<int>
 {
     public decimal[,] Matrix => new decimal[,]
     {

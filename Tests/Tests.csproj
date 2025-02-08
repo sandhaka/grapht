@@ -19,12 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GraphT.Export\GraphT.Export.csproj" />
       <ProjectReference Include="..\GraphT\GraphT.csproj" />
       <ProjectReference Include="..\GraphSamples\GraphSamples.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Tests\Extensions\" />
     </ItemGroup>
 
 </Project>

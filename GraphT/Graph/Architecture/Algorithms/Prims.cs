@@ -1,6 +1,7 @@
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.NodeCollections;
 using GraphT.Graph.Dto;
+using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Algorithms;
 
@@ -9,12 +10,12 @@ internal class Prims<T>
 {
     private readonly FrozenNodeCollection<T> _nodesCollection;
 
-    public Prims(FrozenNodeCollection<T> nodexCollection)
+    public Prims(FrozenNodeCollection<T> nodesCollection)
     {
-        _nodesCollection = nodexCollection;
+        _nodesCollection = nodesCollection;
     }
 
-    public HashSet<EdgeData<T>> FindMst()
+    public Option<HashSet<Node<T>>> Mst()
     {
         var queue = new PriorityQueue<(T from, Edge<T> edge), decimal>();
         var visited = _nodesCollection.Values.ToDictionary(v => v, v => false);
@@ -33,9 +34,10 @@ internal class Prims<T>
         }
 
         if (mst.Count != _nodesCollection.NodesCount - 1)
-            return [];
-
-        return mst;
+            return Option<HashSet<Node<T>>>.None();
+        
+        // Refactoring: Can be more efficient?
+        return BuildMstGraphNodes(mst);
     }
 
     private static void EnqueueEdges(Node<T> node, PriorityQueue<(T, Edge<T>), decimal> pq, Dictionary<T, bool> visited)
@@ -47,6 +49,42 @@ internal class Prims<T>
         {
             if (!visited[edge.To.Value])
                 pq.Enqueue((node.Value, edge), edge.Cost);
+        }
+    }
+
+    private static HashSet<Node<T>> BuildMstGraphNodes(HashSet<EdgeData<T>> mst)
+    {
+        MakeUndirected(mst);
+        
+        // The mst data grouped by nodes
+        var edgesGroups = mst.GroupBy(e => e.From).ToDictionary(g => g.Key, g => g.ToArray()); 
+        // New nodes of the mst graph
+        var nodes = edgesGroups.Select(n => new Node<T>(n.Key)).ToHashSet(); 
+
+        foreach (var n in nodes)
+        {
+            var edgesData = edgesGroups[n.Value]; // Get edges for the node
+            var edges = new Edge<T>[edgesData.Length];
+            var i = 0;
+            
+            foreach (var ed in edgesData)
+            {
+                var to = nodes.First(child => child.Value.Equals(ed.To));
+                edges[i++] = new Edge<T>(to, ed.Cost);
+            }
+            
+            n.Edges = new Memory<Edge<T>>(edges);
+        }
+
+        return nodes;
+    }
+
+    private static void MakeUndirected(HashSet<EdgeData<T>> edges)
+    {
+        for (var i = 0; i < edges.Count; i++)
+        {
+            var edge = edges.ElementAt(i);
+            edges.Add(new EdgeData<T>(edge.To, edge.Cost, edge.From));
         }
     }
 }

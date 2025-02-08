@@ -4,7 +4,8 @@ namespace GraphT.Export;
 
 public static class GraphTExport
 {
-    public static string Export<T>(this IGraph<T> graph, GraphExportOutput output = GraphExportOutput.Plain) where T : IEquatable<T>
+    public static string Export<T>(this IGraph<T> graph, GraphExportOutput output = GraphExportOutput.Plain) 
+        where T : IEquatable<T>
     {
         return output switch
         {

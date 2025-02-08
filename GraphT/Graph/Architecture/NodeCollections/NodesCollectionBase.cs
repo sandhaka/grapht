@@ -1,9 +1,12 @@
+using System.Collections;
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.NodeCollections.Abstractions;
+using GraphT.Graph.Dto;
+using Monads.Optional.Extensions;
 
 namespace GraphT.Graph.Architecture.NodeCollections;
 
-internal abstract class NodesCollectionBase<T> : INodeCollection<T> 
+internal abstract class NodesCollectionBase<T> : INodeCollection<T>, IEnumerable<Node<T>>
     where T : IEquatable<T>
 {
     protected readonly ISet<Node<T>> Nodes;
@@ -39,4 +42,14 @@ internal abstract class NodesCollectionBase<T> : INodeCollection<T>
     }
     
     public Node<T> RandomNode() => Nodes.ElementAt(_random.Next(NodesCount));
+    
+    public IEnumerator<Node<T>> GetEnumerator()
+    {
+        return Nodes.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }
