@@ -111,6 +111,10 @@ public interface IGraph<T>
     /// </summary>
     /// <returns>true if the graph is undirected; otherwise, false.</returns>
     bool IsUndirected();
-    
+
+    /// <summary>
+    /// Retrieves a read-only collection of all edges in the graph.
+    /// </summary>
+    /// <returns>A list of edges, where each edge contains the source, destination, and cost.</returns>
     IReadOnlyList<EdgeData<T>> AllEdges();
 }

@@ -54,6 +54,7 @@ internal class Prims<T>
 
     private static HashSet<Node<T>> BuildMstGraphNodes(HashSet<EdgeData<T>> mst)
     {
+        // Ensure edges of the mst are two-way
         MakeUndirected(mst);
         
         // The mst data grouped by nodes
@@ -63,14 +64,15 @@ internal class Prims<T>
 
         foreach (var n in nodes)
         {
-            var edgesData = edgesGroups[n.Value]; // Get edges for the node
-            var edges = new Edge<T>[edgesData.Length];
+            var edgesData = edgesGroups[n.Value]; 
+            // Allocate edges array of edgesData length
+            var edges = new Edge<T>[edgesData.Length]; 
             var i = 0;
-            
-            foreach (var ed in edgesData)
+
+            for (var j = 0; j < edgesData.Length; j++)
             {
-                var to = nodes.First(child => child.Value.Equals(ed.To));
-                edges[i++] = new Edge<T>(to, ed.Cost);
+                var to = nodes.First(child => child.Value.Equals(edgesData[j].To));
+                edges[i++] = new Edge<T>(to, edgesData[j].Cost);
             }
             
             n.Edges = new Memory<Edge<T>>(edges);

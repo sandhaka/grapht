@@ -122,19 +122,13 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
     
     public IGraph<T> ReduceToMst()
     {
-        if (!IsUndirected())
-            throw new InvalidOperationException("Graph is not undirected");
-        
-        var prims = new Prims<T>(_nodesCollection);
-        var mstNodes = prims.Mst();
-        
-        if (mstNodes.IsNone)
-            return this;
-        
-        return ReadOnlyGraph<T>.Create(mstNodes.Reduce([]));
+        if (!IsUndirected()) throw new InvalidOperationException("Graph is not undirected");
+        var mstNodes = new Prims<T>(_nodesCollection).Mst();
+        return RebuildGraph(mstNodes);
     }
 
-    public bool IsCyclic() => FindCycle();
+    private IGraph<T> RebuildGraph(Option<HashSet<Node<T>>> nodes) =>
+        nodes.IsNone ? this : ReadOnlyGraph<T>.Create(nodes.Reduce([]));
 
     public bool IsUndirected()
     {
@@ -183,6 +177,8 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         
         return allEdges.AsReadOnly();
     }
+    
+    public bool IsCyclic() => FindCycle();
 
     private bool FindCycle(Node<T>? node = null, HashSet<T>? visited = null, Node<T>? parent = null)
     {
@@ -200,7 +196,7 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
             // If the adjacent node is not visited, recurse
             if (!visitedSet.Contains(child.To.Value))
             {
-                if (FindCycle(child.To, visitedSet, node))
+                if (FindCycle(child.To, visitedSet, node)) // Refactoring: leading to stack overflow
                     return true;
             }
             
