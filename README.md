@@ -2,7 +2,7 @@
 
 # Grapht
 
-This project implements a high-performance **graph processing system**, designed for efficient traversal 
+This project implements a modular **graph processing system**, designed for efficient traversal 
 and manipulation of weighted graphs. It leverages modern .NET features such as `IMemory<T>` and `Span<T>` to minimize 
 memory allocations and maximize performance. 
 The focus is on optimizing graph data structures and algorithms for use in scenarios like pathfinding, cost computation, 

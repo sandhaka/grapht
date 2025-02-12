@@ -36,7 +36,6 @@ internal class Prims<T>
         if (mst.Count != _nodesCollection.NodesCount - 1)
             return Option<HashSet<Node<T>>>.None();
         
-        // Refactoring: Can be more efficient?
         return BuildMstGraphNodes(mst);
     }
 
