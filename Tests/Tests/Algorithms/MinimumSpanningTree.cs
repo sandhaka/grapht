@@ -14,7 +14,7 @@ public class MinimumSpanningTree(ITestOutputHelper output)
     {
         var graph = Graph<string>.CreateReadOnly(new SimpleGraphModel());
         
-        Assert.Throws<InvalidOperationException>(() => graph.ReduceToMst());
+        Assert.Throws<InvalidOperationException>(graph.ReduceToMst);
     }
     
     [Fact]
@@ -26,16 +26,12 @@ public class MinimumSpanningTree(ITestOutputHelper output)
         
         var nodesCount = mst.NodesCount;
         var edgesCount = mst.EdgesCount;
-        
-        var exported = mst.Export(GraphExportOutput.Gephi);
-        
-        _output.WriteLine(exported);
 
         // Verify the graph is still undirected
         Assert.True(mst.IsUndirected());
         // A Minimum Spanning Tree for a connected graph must have (nodesCount - 1) edges
         Assert.Equal(nodesCount - 1, edgesCount / 2);
-        // Verify there are no cycles in the graph (must be acyclic)
+        // Must be acyclic
         Assert.False(mst.IsCyclic());
     }
 
@@ -48,17 +44,11 @@ public class MinimumSpanningTree(ITestOutputHelper output)
         var nodesCount = mst.NodesCount;
         var edgesCount = mst.EdgesCount;
         
-        var exported = graph.Export(GraphExportOutput.Gephi);
-        var exportedMst = mst.Export(GraphExportOutput.Gephi);
-        
-        _output.WriteLine(exported);
-        _output.WriteLine(exportedMst);
-        
         // Verify the graph is still undirected
         Assert.True(mst.IsUndirected());
         // A Minimum Spanning Tree for a connected graph must have (nodesCount - 1) edges
         Assert.Equal(nodesCount - 1, edgesCount / 2);
-        // Verify there are no cycles in the graph (must be acyclic)
+        // Must be acyclic
         Assert.False(mst.IsCyclic());
     }
 }
