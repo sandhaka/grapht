@@ -1,5 +1,4 @@
 using GraphSamples;
-using GraphT.Export;
 using GraphT.Graph;
 using Xunit.Abstractions;
 
@@ -39,6 +38,23 @@ public class MinimumSpanningTree(ITestOutputHelper output)
     public void ShouldFindTheMinimumSpanningTree2()
     {
         var graph = Graph<int>.CreateReadOnly(new SparseUndirectedGraphModel2());
+        var mst = graph.ReduceToMst();
+        
+        var nodesCount = mst.NodesCount;
+        var edgesCount = mst.EdgesCount;
+        
+        // Verify the graph is still undirected
+        Assert.True(mst.IsUndirected());
+        // A Minimum Spanning Tree for a connected graph must have (nodesCount - 1) edges
+        Assert.Equal(nodesCount - 1, edgesCount / 2);
+        // Must be acyclic
+        Assert.False(mst.IsCyclic());
+    }
+
+    [Fact]
+    public void ShouldFindTheMinimumSpanningTree3()
+    {
+        var graph = Graph<int>.CreateReadOnly(new SparseUndirectedGraphModel3()); // 200 nodes
         var mst = graph.ReduceToMst();
         
         var nodesCount = mst.NodesCount;

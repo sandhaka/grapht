@@ -1,5 +1,6 @@
 import random
 import csv
+from sys import argv
 
 
 class GraphMatrixModel:
@@ -101,9 +102,17 @@ class GraphMatrixModel:
 
 # Example Usage
 if __name__ == "__main__":
-    number_of_vertices = 30  # Total number of vertices
-    max_weight = 100  # Maximum weight for edges
-    clusters = 3  # Number of clusters with different density
+    if len(argv) < 3:
+        print("Usage: python gen_sparse_g.py <number_of_vertices> <number_of_clusters>")
+        exit(1)
+        
+    # pick from args
+    number_of_vertices = int(argv[1])    # Total number of vertices
+    clusters = int(argv[2])              # Number of clusters with different density
+
+    max_weight = 10  # Maximum weight for edges
+
+    print ("\nGenerating a sparse graph with {} vertices and {} clusters...".format(number_of_vertices, clusters))
 
     graph = GraphMatrixModel(number_of_vertices, max_weight, clusters)
 
