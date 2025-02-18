@@ -3,9 +3,9 @@ using GraphT.Models.Abstractions;
 
 namespace GraphT.Models.Validators;
 
-public static class GraphModelValidatorsExtensions
+internal static class GraphModelValidatorsExtensions
 {
-    internal static void Validate<T>(this IGraphListModel<T> model) where T : IEquatable<T>
+    public static void Validate<T>(this IGraphListModel<T> model) where T : IEquatable<T>
     {
         // Check if all edges are valid
         var edges = model.AdjacencyList;
@@ -16,8 +16,12 @@ public static class GraphModelValidatorsExtensions
         }
     }
     
-    internal static void Validate<T>(this IGraphMatrixModel<T> model) where T : IEquatable<T>
+    public static void Validate<T>(this IGraphMatrixModel<T> model) where T : IEquatable<T>
     {
-        // TODO
+        // Check first two dimensions
+        if (model.Matrix.GetLength(1) != model.Nodes.Length)
+            throw new InvalidGraphDataException<T>();
+        if (model.Matrix.GetLength(0) != model.Nodes.Length)
+            throw new InvalidGraphDataException<T>();
     }
 }
