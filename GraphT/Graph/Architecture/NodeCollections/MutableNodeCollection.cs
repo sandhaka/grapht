@@ -62,10 +62,10 @@ internal sealed class MutableNodeCollection<T> : NodesCollectionBase<T>, IMutabl
         ValidateEdges(outEdgesValues);
         
         var node = new Node<T>(value);
-        var outEdges = outEdgesValues.Select(edgeTuple => CreateEdge(edgeTuple.NodeValue, edgeTuple.Cost));
-        node.Edges = new Memory<Edge<T>>(outEdges.ToArray());
-        
         Nodes.Add(node);
+
+        var outEdges = outEdgesValues.Select(edgeTuple => CreateEdge(value, edgeTuple.NodeValue, edgeTuple.Cost));
+        node.Edges = new Memory<Edge<T>>(outEdges.ToArray());
         
         AddEdgesInConnectedNodes(inEdgesValues, node);
     }
@@ -78,28 +78,29 @@ internal sealed class MutableNodeCollection<T> : NodesCollectionBase<T>, IMutabl
         }
     }
     
-    private Edge<T> CreateEdge(T value, decimal cost)
+    private Edge<T> CreateEdge(T src, T dest, decimal cost)
     {
-        var destinationNode = Nodes.First(n => n.Value.Equals(value));
-        return new Edge<T>(destinationNode, cost);
+        var sourceNode = Nodes.First(n => n.Value.Equals(src));
+        var destinationNode = Nodes.First(n => n.Value.Equals(dest));
+        return new Edge<T>(sourceNode, destinationNode, cost);
     }
 
     private void AddEdgesInConnectedNodes(EdgeTuple<T>[] inEdges, Node<T> dest)
     {
         foreach (var (nodeValue, cost) in inEdges)
         {
-            var node = Nodes.First(n => n.Value.Equals(nodeValue));
+            var from = Nodes.First(n => n.Value.Equals(nodeValue));
 
-            if (node.Edges.IsEmpty)
+            if (from.Edges.IsEmpty)
             {
-                node.Edges = new Memory<Edge<T>>([new Edge<T>(dest, cost)]);
+                from.Edges = new Memory<Edge<T>>([new Edge<T>(from, dest, cost)]);
                 continue;
             }
             
-            var updatedEdges = new Edge<T>[node.Edges.Length + 1];
-            node.Edges.Span.CopyTo(updatedEdges);
-            updatedEdges[^1] = new Edge<T>(dest, cost);
-            node.Edges = new Memory<Edge<T>>(updatedEdges);
+            var updatedEdges = new Edge<T>[from.Edges.Length + 1];
+            from.Edges.Span.CopyTo(updatedEdges);
+            updatedEdges[^1] = new Edge<T>(from, dest, cost);
+            from.Edges = new Memory<Edge<T>>(updatedEdges);
         }
     }
 }

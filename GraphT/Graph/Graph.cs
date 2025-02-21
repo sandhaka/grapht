@@ -57,12 +57,12 @@ public static class Graph<T>
                 weights[nodeValues[j]] = w;
             }
 
+            var node = nodes[nodeValues[i]];
+
             var edges = weights
                 .Where(w => w.Value > 0)
-                .Select(e => new Edge<T>(nodes[e.Key], e.Value))
+                .Select(e => new Edge<T>(node, nodes[e.Key], e.Value))
                 .ToArray();
-            
-            var node = nodes[nodeValues[i]];
             
             node.Edges = new Memory<Edge<T>>(edges);
             
@@ -94,7 +94,7 @@ public static class Graph<T>
             var node = nodes.Single(n => n.Value.Equals(entryKey));
             
             var edges = neighborValues
-                .Select(x => new Edge<T>(nodes.Single(n => n.Value.Equals(x.Value)), x.Cost))
+                .Select(x => new Edge<T>(node, nodes.Single(n => n.Value.Equals(x.Value)), x.Cost))
                 .ToArray();
             
             node.Edges = new Memory<Edge<T>>(edges);

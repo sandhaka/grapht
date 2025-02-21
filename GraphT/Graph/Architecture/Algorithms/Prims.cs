@@ -71,7 +71,7 @@ internal class Prims<T>
             for (var j = 0; j < edgesData.Length; j++)
             {
                 var to = nodes.First(child => child.Value.Equals(edgesData[j].To));
-                edges[i++] = new Edge<T>(to, edgesData[j].Cost);
+                edges[i++] = new Edge<T>(n, to, edgesData[j].Cost);
             }
             
             n.Edges = new Memory<Edge<T>>(edges);
