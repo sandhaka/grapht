@@ -4,8 +4,8 @@ namespace GraphSamples;
 
 public class LargeGraphListModel : IGraphListModel<string>
 {
-    public IDictionary<string, List<(string Value, decimal Cost)>> AdjacencyList =>
-        new Dictionary<string, List<(string Value, decimal Cost)>>
+    public IDictionary<string, List<(string Key, decimal Cost)>> AdjacencyList =>
+        new Dictionary<string, List<(string Key, decimal Cost)>>
             {
                 { "Node1", new List<(string, decimal)> { ("Node2", 1), ("Node3", 4) } },
                 { "Node2", new List<(string, decimal)> { ("Node1", 1), ("Node4", 2), ("Node5", 3) } },
@@ -22,15 +22,15 @@ public class LargeGraphListModel : IGraphListModel<string>
             }
             .MergeWith(GenerateGraphPart(12, 100, 2, 10)); // Filling up to 100 nodes
 
-    private IDictionary<string, List<(string Value, decimal Cost)>> GenerateGraphPart(
+    private IDictionary<string, List<(string Key, decimal Cost)>> GenerateGraphPart(
         int startNode, int endNode, int minCost, int maxCost)
     {
         var random = new Random();
-        var adjacencyList = new Dictionary<string, List<(string Value, decimal Cost)>>();
+        var adjacencyList = new Dictionary<string, List<(string Key, decimal Cost)>>();
 
         for (int i = startNode; i <= endNode; i++)
         {
-            var connections = new List<(string Value, decimal Cost)>();
+            var connections = new List<(string Key, decimal Cost)>();
             if (i > startNode)
                 connections.Add(($"Node{i - 1}", random.Next(minCost, maxCost))); // Link to previous node
             if (i < endNode)
@@ -44,9 +44,9 @@ public class LargeGraphListModel : IGraphListModel<string>
 
 internal static class AdjacencyListExtensions
 {
-    public static IDictionary<string, List<(string Value, decimal Cost)>> MergeWith(
-        this IDictionary<string, List<(string Value, decimal Cost)>> original,
-        IDictionary<string, List<(string Value, decimal Cost)>> other)
+    public static IDictionary<string, List<(string Key, decimal Cost)>> MergeWith(
+        this IDictionary<string, List<(string Key, decimal Cost)>> original,
+        IDictionary<string, List<(string Key, decimal Cost)>> other)
     {
         foreach (var node in other)
         {

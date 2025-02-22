@@ -1,20 +1,24 @@
 using System.Diagnostics;
+using GraphT.Graph.Constraints;
+using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Components;
 
-[DebuggerDisplay("{Value}")]
-internal record Node<T>(T Value) where T : IEquatable<T>
+[DebuggerDisplay("{Key}")]
+internal record Node<TK>(TK Key) where TK : IEquatable<TK>
 {
-    public Memory<Edge<T>> Edges { get; set; } = Memory<Edge<T>>.Empty;
+    public Memory<Edge<TK>> Edges { get; set; } = Memory<Edge<TK>>.Empty;
+    
+    public Option<IVariable> Variable { get; set; } = Option<IVariable>.None();
     
     public bool HasEdges => !Edges.IsEmpty;
 
-    public override int GetHashCode() => Value?.GetHashCode() ?? 0;
+    public override int GetHashCode() => Key?.GetHashCode() ?? 0;
 
-    public virtual bool Equals(Node<T>? other)
+    public virtual bool Equals(Node<TK>? other)
     {
         if (ReferenceEquals(this, other)) return true;
         if (ReferenceEquals(null, other)) return false;
-        return Value.Equals(other.Value);
+        return Key.Equals(other.Key);
     }
 }

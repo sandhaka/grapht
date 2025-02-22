@@ -4,47 +4,47 @@ using GraphT.Models.Abstractions;
 namespace GraphSamples;
 
 [DebuggerDisplay("{Name}")]
-public record GeoNodeValue // Value geo-localized useful to test the heuristic
+public record GeoNode // Value geo-localized useful to test the heuristic
 {
     public required string Name { get; init; }
     public required int X { get; init; }
     public required int Y { get; init; }
 }
 
-public class RomaniaMapGraphModel : IGraphListModel<GeoNodeValue>
+public class RomaniaMapGraphModel : IGraphListModel<GeoNode>
 {
-    private readonly Dictionary<string, GeoNodeValue> _nodes = new()
+    private readonly Dictionary<string, GeoNode> _nodes = new()
     {
-        ["Arad"] = new GeoNodeValue { Name = "Arad", X = 91, Y = 492 },
-        ["Bucharest"] = new GeoNodeValue { Name = "Bucharest", X = 400, Y = 327 },
-        ["Craiova"] = new GeoNodeValue { Name = "Craiova", X = 253, Y = 288 },
-        ["Drobeta"] = new GeoNodeValue { Name = "Drobeta", X = 165, Y = 299 },
-        ["Eforie"] = new GeoNodeValue { Name = "Eforie", X = 562, Y = 293 },
-        ["Fagaras"] = new GeoNodeValue { Name = "Fagaras", X = 305, Y = 449 },
-        ["Giurgiu"] = new GeoNodeValue { Name = "Giurgiu", X = 375, Y = 270 },
-        ["Hirsova"] = new GeoNodeValue { Name = "Hirsova", X = 534, Y = 350 },
-        ["Iasi"] = new GeoNodeValue { Name = "Iasi", X = 473, Y = 506 },
-        ["Lugoj"] = new GeoNodeValue { Name = "Lugoj", X = 165, Y = 379 },
-        ["Mehadia"] = new GeoNodeValue { Name = "Mehadia", X = 168, Y = 339 },
-        ["Neamt"] = new GeoNodeValue { Name = "Neamt", X = 406, Y = 537 },
-        ["Oradea"] = new GeoNodeValue { Name = "Oradea", X = 131, Y = 571 },
-        ["Pitesti"] = new GeoNodeValue { Name = "Pitesti", X = 320, Y = 368 },
-        ["Rimnicu"] = new GeoNodeValue { Name = "Rimnicu", X = 233, Y = 410 },
-        ["Sibiu"] = new GeoNodeValue { Name = "Sibiu", X = 207, Y = 457 },
-        ["Timisoara"] = new GeoNodeValue { Name = "Timisoara", X = 94, Y = 410 },
-        ["Urziceni"] = new GeoNodeValue { Name = "Urziceni", X = 456, Y = 350 },
-        ["Vaslui"] = new GeoNodeValue { Name = "Vaslui", X = 509, Y = 444 },
-        ["Zerind"] = new GeoNodeValue { Name = "Zerind", X = 108, Y = 531 },
+        ["Arad"] = new GeoNode { Name = "Arad", X = 91, Y = 492 },
+        ["Bucharest"] = new GeoNode { Name = "Bucharest", X = 400, Y = 327 },
+        ["Craiova"] = new GeoNode { Name = "Craiova", X = 253, Y = 288 },
+        ["Drobeta"] = new GeoNode { Name = "Drobeta", X = 165, Y = 299 },
+        ["Eforie"] = new GeoNode { Name = "Eforie", X = 562, Y = 293 },
+        ["Fagaras"] = new GeoNode { Name = "Fagaras", X = 305, Y = 449 },
+        ["Giurgiu"] = new GeoNode { Name = "Giurgiu", X = 375, Y = 270 },
+        ["Hirsova"] = new GeoNode { Name = "Hirsova", X = 534, Y = 350 },
+        ["Iasi"] = new GeoNode { Name = "Iasi", X = 473, Y = 506 },
+        ["Lugoj"] = new GeoNode { Name = "Lugoj", X = 165, Y = 379 },
+        ["Mehadia"] = new GeoNode { Name = "Mehadia", X = 168, Y = 339 },
+        ["Neamt"] = new GeoNode { Name = "Neamt", X = 406, Y = 537 },
+        ["Oradea"] = new GeoNode { Name = "Oradea", X = 131, Y = 571 },
+        ["Pitesti"] = new GeoNode { Name = "Pitesti", X = 320, Y = 368 },
+        ["Rimnicu"] = new GeoNode { Name = "Rimnicu", X = 233, Y = 410 },
+        ["Sibiu"] = new GeoNode { Name = "Sibiu", X = 207, Y = 457 },
+        ["Timisoara"] = new GeoNode { Name = "Timisoara", X = 94, Y = 410 },
+        ["Urziceni"] = new GeoNode { Name = "Urziceni", X = 456, Y = 350 },
+        ["Vaslui"] = new GeoNode { Name = "Vaslui", X = 509, Y = 444 },
+        ["Zerind"] = new GeoNode { Name = "Zerind", X = 108, Y = 531 },
     };
     
-    public GeoNodeValue Get(string key) => _nodes[key];
+    public GeoNode Get(string key) => _nodes[key];
 
-    public IDictionary<GeoNodeValue, List<(GeoNodeValue Value, decimal Cost)>> AdjacencyList
+    public IDictionary<GeoNode, List<(GeoNode Key, decimal Cost)>> AdjacencyList
     {
         get // Generate a full graph map of Romanian cities,
             // sample taken from "Artificial Intelligence: A Modern approach" by Peter Norvig
         {
-            var map = new Dictionary<GeoNodeValue, List<(GeoNodeValue Value, decimal Cost)>>
+            var map = new Dictionary<GeoNode, List<(GeoNode Key, decimal Cost)>>
             {
                 [_nodes["Arad"]] = [ (_nodes["Zerind"], 75m), (_nodes["Sibiu"], 140m), (_nodes["Timisoara"], 118m) ],
                 [_nodes["Bucharest"]] = [ (_nodes["Urziceni"], 85m), (_nodes["Pitesti"], 101m),(_nodes["Giurgiu"], 90m), (_nodes["Fagaras"], 211m)  ],
@@ -71,8 +71,8 @@ public class RomaniaMapGraphModel : IGraphListModel<GeoNodeValue>
             // Build the undirected graph
             foreach (var (n, values) in map)
                 foreach (var ne in values)
-                    if(!map[ne.Value].Contains((n, ne.Cost)))
-                        map[ne.Value].Add((n, ne.Cost));
+                    if(!map[ne.Key].Contains((n, ne.Cost)))
+                        map[ne.Key].Add((n, ne.Cost));
 
             return map;
         }

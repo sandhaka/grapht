@@ -148,7 +148,7 @@ public class PathFinding(ITestOutputHelper output)
     public void ShouldFindShortestPathWithAStar()
     {
         var pathFindingOfRomanianCities = new RomaniaMapGraphModel();
-        var searchStrategy = new AStar<GeoNodeValue>(Heuristic);
+        var searchStrategy = new AStar<GeoNode>(Heuristic);
         var pathSearch = PreparePathSearch(pathFindingOfRomanianCities, searchStrategy);
         
         var startNode = pathFindingOfRomanianCities.Get("Arad");
@@ -157,19 +157,19 @@ public class PathFinding(ITestOutputHelper output)
         // Act
         var s = pathSearch.Search(startNode, endNode, out var result);
         
-        var reducedResult = result.Reduce(new SearchResult<GeoNodeValue> { Path = new List<GeoNodeValue>(), TotalCost = 0 });
+        var reducedResult = result.Reduce(new SearchResult<GeoNode> { Path = new List<GeoNode>(), TotalCost = 0 });
         var resultPath = string.Join(',', reducedResult.Path.Select(n => n.Name));
         _output.WriteLine($"Reached {resultPath} with cost {reducedResult.TotalCost}");
         
         // Verify
-        Assert.IsType<AStar<GeoNodeValue>>(pathSearch.ShortestPathSearchStrategy);
+        Assert.IsType<AStar<GeoNode>>(pathSearch.ShortestPathSearchStrategy);
         Assert.True(s);
         Assert.Equal("Arad,Sibiu,Rimnicu,Pitesti,Bucharest", resultPath);
         Assert.Equal(418, reducedResult.TotalCost);
         return;
 
         // Define a valid heuristic function for the model
-        decimal Heuristic(GeoNodeValue node, IPathSearchContext<GeoNodeValue> context)
+        decimal Heuristic(GeoNode node, IPathSearchContext<GeoNode> context)
         {
             var target = context.Target;
             var x = node.X - target.X;

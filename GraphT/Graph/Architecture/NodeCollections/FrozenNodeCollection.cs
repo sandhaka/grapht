@@ -5,10 +5,10 @@ using GraphT.Graph.Architecture.Components;
 namespace GraphT.Graph.Architecture.NodeCollections;
 
 [DebuggerDisplay("{NodesCount} nodes")]
-internal sealed class FrozenNodeCollection<T> : NodesCollectionBase<T>
-    where T : IEquatable<T>
+internal sealed class FrozenNodeCollection<TK> : NodesCollectionBase<TK>
+    where TK : IEquatable<TK>
 {
-    public FrozenNodeCollection(IEnumerable<Node<T>> nodes) : base(nodes.ToFrozenSet())
+    public FrozenNodeCollection(IEnumerable<Node<TK>> nodes) : base(nodes.ToFrozenSet())
     {
     }
 }

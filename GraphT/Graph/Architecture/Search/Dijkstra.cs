@@ -3,22 +3,22 @@ using GraphT.Graph.Search;
 using GraphT.Graph.Search.Context;
 using Monads.Optional;
 
-namespace GraphT.Graph.Architecture.Algorithms;
+namespace GraphT.Graph.Architecture.Search;
 
-internal class Dijkstra<T> : IShortestPathSearchStrategy<T>
-    where T : IEquatable<T>
+internal class Dijkstra<TK> : IShortestPathSearchStrategy<TK>
+    where TK : IEquatable<TK>
 {
     public string Name => "Dijkstra";
 
     // Dijkstra has no heuristic
-    public Option<Heuristic<T>> Heuristic { get; set; } = Option<Heuristic<T>>.None();
+    public Option<Heuristic<TK>> Heuristic { get; set; } = Option<Heuristic<TK>>.None();
 
-    public bool Run(IPathSearchContext<T> context, out Option<SearchResult<T>> result)
+    public bool Run(IPathSearchContext<TK> context, out Option<SearchResult<TK>> result)
     {
         var found = false;
-        var queue = new PriorityQueue<T, decimal>();
+        var queue = new PriorityQueue<TK, decimal>();
 
-        var (visited, distances, pathMarker) = DataStructPrepare(context.NodeValues);
+        var (visited, distances, pathMarker) = DataStructPrepare(context.NodeKeys);
         
         queue.Enqueue(context.Start, 0);
         distances[context.Start] = 0;
@@ -30,20 +30,20 @@ internal class Dijkstra<T> : IShortestPathSearchStrategy<T>
 
             foreach (var edge in context.NodeEdges(nv))
             {
-                var nodeValue = edge.NodeValue;
+                var nodeKey = edge.NodeKey;
                 var cost = edge.Cost;
                 
-                if (visited[nodeValue])
+                if (visited[nodeKey])
                     continue;
                 
                 var distance = distances[nv] + cost;
 
-                if (distance >= distances[nodeValue]) 
+                if (distance >= distances[nodeKey]) 
                     continue;
                 
-                pathMarker[nodeValue] = nv;
-                distances[nodeValue] = distance;
-                queue.Enqueue(nodeValue, distance);
+                pathMarker[nodeKey] = nv;
+                distances[nodeKey] = distance;
+                queue.Enqueue(nodeKey, distance);
             }
 
             if (!nv.Equals(context.Target)) 
@@ -53,12 +53,12 @@ internal class Dijkstra<T> : IShortestPathSearchStrategy<T>
             break;
         }
         
-        result = Option<SearchResult<T>>.None();
+        result = Option<SearchResult<TK>>.None();
         
         if (found is false)
             return false;
         
-        result = new SearchResult<T>
+        result = new SearchResult<TK>
         {
             Path = GenPath(pathMarker, context.Target).Reverse().ToList(),
             TotalCost = distances[context.Target]
@@ -67,19 +67,18 @@ internal class Dijkstra<T> : IShortestPathSearchStrategy<T>
         return true;
     }
 
-    private static (Dictionary<T, bool> visited, Dictionary<T, decimal> distances, Dictionary<T, T?> pathMarker)
-        DataStructPrepare(IReadOnlySet<T> nodeValuesSet)
+    private static (Dictionary<TK, bool> visited, Dictionary<TK, decimal> distances, Dictionary<TK, TK?> pathMarker) DataStructPrepare(IReadOnlySet<TK> nodeKeysSet)
     {
         return (
-            visited: nodeValuesSet.ToDictionary(x => x, _ => false),
-            distances: nodeValuesSet.ToDictionary(x => x, _ => decimal.MaxValue),
-            pathMarker: nodeValuesSet.ToDictionary(x => x, _ => default(T))
+            visited: nodeKeysSet.ToDictionary(x => x, _ => false),
+            distances: nodeKeysSet.ToDictionary(x => x, _ => decimal.MaxValue),
+            pathMarker: nodeKeysSet.ToDictionary(x => x, _ => default(TK))
         );
     }
 
-    private static IEnumerable<T> GenPath(Dictionary<T, T?> prev, T target)
+    private static IEnumerable<TK> GenPath(Dictionary<TK, TK?> prev, TK target)
     {
-        T? n = target;
+        TK? n = target;
         yield return n;
 
         while (n is not null && prev[n] is not null)

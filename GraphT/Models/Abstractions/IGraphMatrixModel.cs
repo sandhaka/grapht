@@ -3,8 +3,8 @@ namespace GraphT.Models.Abstractions;
 /// <summary>
 /// Represents a model for a graph adjacency matrix that uses generic type nodes.
 /// </summary>
-/// <typeparam name="T">The type of nodes in the graph, where T must implement IEquatable.</typeparam>
-public interface IGraphMatrixModel<out T> where T : IEquatable<T>
+/// <typeparam name="TK">The type of nodes in the graph, where TK must implement IEquatable.</typeparam>
+public interface IGraphMatrixModel<out TK> where TK : IEquatable<TK>
 {
     /// <summary>
     /// Gets the adjacency matrix representation of the graph.
@@ -15,7 +15,7 @@ public interface IGraphMatrixModel<out T> where T : IEquatable<T>
 
     /// <summary>
     /// Gets the collection of nodes in the graph.
-    /// Each node is represented by its corresponding value of type T, where T must implement IEquatable.
+    /// Each node is represented by its corresponding key TK, where TK must implement IEquatable.
     /// </summary>
-    public T[] Nodes { get; }
+    public TK[] Nodes { get; }
 }

@@ -1,7 +1,7 @@
 using GraphT.Graph.Architecture.Abstractions;
-using GraphT.Graph.Architecture.Algorithms;
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.NodeCollections;
+using GraphT.Graph.Constraints;
 using GraphT.Graph.Dto;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
@@ -9,25 +9,25 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Implementations;
 
-internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T> 
-    where T : IEquatable<T>
+internal abstract class GraphBase<TK> : IGraph<TK>, IGraphComponents<TK> 
+    where TK : IEquatable<TK>
 {
-    private readonly FrozenNodeCollection<T> _nodesCollection;
+    private readonly FrozenNodeCollection<TK> _nodesCollection;
 
-    protected GraphBase(FrozenNodeCollection<T> nodesCollection)
+    protected GraphBase(FrozenNodeCollection<TK> nodesCollection)
     {
         _nodesCollection = nodesCollection;
     }
 
-    public IReadOnlySet<T> NodeValues => _nodesCollection.Values;
-    public Node<T> this[T value] => _nodesCollection[value];
-    public Option<OnVisit<T>> OnVisitActionParameter { get; set; } = Option<OnVisit<T>>.None();
+    public IReadOnlySet<TK> NodeKeys => _nodesCollection.Keys;
+    public Node<TK> this[TK key] => _nodesCollection[key];
+    public Option<OnVisit<TK>> OnVisitActionParameter { get; set; } = Option<OnVisit<TK>>.None();
     public int NodesCount => _nodesCollection.NodesCount;
     public int EdgesCount => _nodesCollection.Sum(n => n.Edges.Length);
 
-    public bool ContainsNode(T value) => _nodesCollection.Contains(value);
+    public bool ContainsNode(TK key) => _nodesCollection.Contains(key);
     
-    public bool AreConnected(T start, T end)
+    public bool AreConnected(TK start, TK end)
     {
         if (!_nodesCollection.Contains(start) || !_nodesCollection.Contains(end)) 
             return false;
@@ -35,14 +35,14 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
             return true;
         
         var node = _nodesCollection[start];
-        var visited = new HashSet<Node<T>> { node };
-        var queue = new Queue<Node<T>>([node]);
+        var visited = new HashSet<Node<TK>> { node };
+        var queue = new Queue<Node<TK>>([node]);
         
         while (queue.Count > 0)
         {
             node = queue.Dequeue();
             
-            if (node.Value.Equals(end)) 
+            if (node.Key.Equals(end)) 
                 return true;
 
             var span = node.Edges.Span;
@@ -58,13 +58,13 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         return false;
     }
 
-    public void TraverseDfs(T start)
+    public void TraverseDfs(TK start)
     {
         if (!_nodesCollection.Contains(start)) return;
         
         var node = _nodesCollection[start];
-        var visited = new HashSet<Node<T>>();
-        var stack = new Stack<Node<T>>([node]);
+        var visited = new HashSet<Node<TK>>();
+        var stack = new Stack<Node<TK>>([node]);
 
         while (stack.Count > 0)
         {
@@ -86,13 +86,13 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         }
     }
     
-    public void TraverseBfs(T start)
+    public void TraverseBfs(TK start)
     {
         if (!_nodesCollection.Contains(start)) return;
         
         var node = _nodesCollection[start];
-        var visited = new HashSet<Node<T>>() { node };
-        var queue = new Queue<Node<T>>([node]);
+        var visited = new HashSet<Node<TK>>() { node };
+        var queue = new Queue<Node<TK>>([node]);
         
         while (queue.Count > 0)
         {
@@ -113,22 +113,22 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         }
     }
     
-    public IGraphMod<T> Mod() => MutableGraph<T>.Create(this, _nodesCollection.ToArray());
+    public IGraphMod<TK> Mod() => MutableGraph<TK>.Create(this, _nodesCollection.ToArray());
 
-    public IPathSearch<T> ToPathSearch() => new PathSearch<T>(this);
+    public IPathSearch<TK> ToPathSearch() => new PathSearch<TK>(this);
     
-    public IPathSearch<T> ToPathSearch(IShortestPathSearchStrategy<T> shortestPathSearchStrategy) => 
-        new PathSearch<T>(this, shortestPathSearchStrategy);
+    public IPathSearch<TK> ToPathSearch(IShortestPathSearchStrategy<TK> shortestPathSearchStrategy) => 
+        new PathSearch<TK>(this, shortestPathSearchStrategy);
     
-    public IGraph<T> ReduceToMst()
+    public IGraph<TK> ReduceToMst()
     {
         if (!IsUndirected()) throw new InvalidOperationException("Graph is not undirected");
-        var mstNodes = new Prims<T>(_nodesCollection).Mst();
+        var mstNodes = new Prims<TK>(_nodesCollection).Mst();
         return RebuildGraph(mstNodes);
     }
 
-    private IGraph<T> RebuildGraph(Option<HashSet<Node<T>>> nodes) =>
-        nodes.IsNone ? this : ReadOnlyGraph<T>.Create(nodes.Reduce([]));
+    private IGraph<TK> RebuildGraph(Option<HashSet<Node<TK>>> nodes) =>
+        nodes.IsNone ? this : ReadOnlyGraph<TK>.Create(nodes.Reduce([]));
 
     public bool IsUndirected()
     {
@@ -147,7 +147,7 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
                 var childSpan = edge.To.Edges.Span;
                 for (var j = 0; j < edge.To.Edges.Length; j++)
                 {
-                    if (childSpan[j].To.Value.Equals(node.Value))
+                    if (childSpan[j].To.Key.Equals(node.Key))
                         reverseEdgeExists = true;
                 }
                 
@@ -159,9 +159,9 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         return true; // All edges are reciprocal, the graph is undirected
     }
 
-    public IReadOnlyList<EdgeData<T>> AllEdges()
+    public IReadOnlyList<EdgeData<TK>> AllEdges()
     {
-        var allEdges = new List<EdgeData<T>>();
+        var allEdges = new List<EdgeData<TK>>();
         
         foreach (var node in _nodesCollection)
         {
@@ -169,23 +169,29 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
             for (var i = 0; i < node.Edges.Length; i++)
             {
                 var cost = edges[i].Cost;
-                var to = edges[i].To.Value;
+                var to = edges[i].To.Key;
+                var from = edges[i].From.Key;
                 
-                allEdges.Add(new EdgeData<T>(node.Value, cost, to));
+                allEdges.Add(new EdgeData<TK>(from, cost, to));
             }
         }
         
         return allEdges.AsReadOnly();
     }
-    
+
+    public ICsp<TK> ToCsp(IDictionary<TK, Domain> domains, IDictionary<TK, IConstraint[]> constraints)
+    {
+        throw new NotImplementedException();
+    }
+
     public bool IsCyclic() => FindCycle();
 
-    private bool FindCycle(Node<T>? node = null, HashSet<T>? visited = null, Node<T>? parent = null)
+    private bool FindCycle(Node<TK>? node = null, HashSet<TK>? visited = null, Node<TK>? parent = null)
     {
         node ??= _nodesCollection.RandomNode();
-        var visitedSet = visited ?? new HashSet<T>();
+        var visitedSet = visited ?? new HashSet<TK>();
 
-        if (!visitedSet.Add(node.Value)) // Mark node as visited
+        if (!visitedSet.Add(node.Key)) // Mark node as visited
             return false;
 
         var span = node.Edges.Span;
@@ -194,7 +200,7 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         {
             var child = span[i];
             // If the adjacent node is not visited, recurse
-            if (!visitedSet.Contains(child.To.Value))
+            if (!visitedSet.Contains(child.To.Key))
             {
                 if (FindCycle(child.To, visitedSet, node)) // Refactoring: leading to stack overflow
                     return true;
@@ -210,10 +216,10 @@ internal abstract class GraphBase<T> : IGraph<T>, IGraphComponents<T>
         return false;
     }
 
-    protected virtual void ActionExecute(Node<T> node)
+    protected virtual void ActionExecute(Node<TK> node)
     {
         var action = OnVisitActionParameter.Reduce(_ => { });
         
-        action(node.Value);
+        action(node.Key);
     }
 }

@@ -4,8 +4,8 @@ namespace GraphSamples;
 
 public class PathModel : IGraphListModel<string>
 {
-    public IDictionary<string, List<(string Value, decimal Cost)>> AdjacencyList { get; } =
-        new Dictionary<string, List<(string Value, decimal Cost)>>
+    public IDictionary<string, List<(string Key, decimal Cost)>> AdjacencyList { get; } =
+        new Dictionary<string, List<(string Key, decimal Cost)>>
         {
             ["A"] = [("B", 3), ("F", 7)],
             ["B"] = [("C", 2), ("H", 8)],

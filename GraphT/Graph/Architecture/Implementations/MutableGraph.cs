@@ -5,43 +5,43 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Implementations;
 
-internal sealed class MutableGraph<T> : IGraphMod<T>
-    where T : IEquatable<T>
+internal sealed class MutableGraph<TK> : IGraphMod<TK>
+    where TK : IEquatable<TK>
 {
-    private readonly IGraph<T> _originalGraph; // Keep original reference can be useful for future usage
-    private readonly MutableNodeCollection<T> _nodes;
+    private readonly IGraph<TK> _originalGraph; // Keep original reference can be useful for future usage
+    private readonly MutableNodeCollection<TK> _nodes;
     
-    private MutableGraph(IGraph<T> originalGraph, IEnumerable<Node<T>> nodes)
+    private MutableGraph(IGraph<TK> originalGraph, IEnumerable<Node<TK>> nodes)
     {
         _originalGraph = originalGraph;
-        _nodes = new MutableNodeCollection<T>(nodes);
+        _nodes = new MutableNodeCollection<TK>(nodes);
     }
     
-    public static MutableGraph<T> Create(IGraph<T> originalGraph, IEnumerable<Node<T>> nodes)
+    public static MutableGraph<TK> Create(IGraph<TK> originalGraph, IEnumerable<Node<TK>> nodes)
     {
-        var g = new MutableGraph<T>(originalGraph, nodes);
+        var g = new MutableGraph<TK>(originalGraph, nodes);
         
         return g;
     }
 
-    public IGraph<T> EndMod()
+    public IGraph<TK> EndMod()
     {
-        var readonlyGraph = ReadOnlyGraph<T>.Create(_nodes.ToArray());
+        var readonlyGraph = ReadOnlyGraph<TK>.Create(_nodes.ToArray());
         
         readonlyGraph.OnVisitActionParameter = _originalGraph.OnVisitActionParameter;
 
         return readonlyGraph;
     }
     
-    public IGraphMod<T> AddNode(T value, Option<EdgeTuple<T>[]> inEdges, Option<EdgeTuple<T>[]> outEdges)
+    public IGraphMod<TK> AddNode(TK key, Option<EdgeTuple<TK>[]> inEdges, Option<EdgeTuple<TK>[]> outEdges)
     {
-        _nodes.Add(value, inEdges, outEdges);
+        _nodes.Add(key, inEdges, outEdges);
         return this;
     }
 
-    public IGraphMod<T> RemoveNode(T value)
+    public IGraphMod<TK> RemoveNode(TK key)
     {
-        _nodes.Remove(value);
+        _nodes.Remove(key);
         return this;
     }
 }

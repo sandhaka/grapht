@@ -1,5 +1,3 @@
-using GraphT.Graph.Constraints;
-
 namespace GraphT.Graph.Architecture.Components;
 
-internal record Edge<T>(Node<T> From, Node<T> To, decimal Cost) where T : IEquatable<T>;
+internal record Edge<TK>(Node<TK> From, Node<TK> To, decimal Cost) where TK : IEquatable<TK>;

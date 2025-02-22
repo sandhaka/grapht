@@ -1,15 +1,11 @@
 namespace GraphT.Graph.Dto;
 
-public record EdgeTuple<T>
+public record EdgeTuple<TK>
 {
     /// <summary>
-    /// Represents the value of a node.
-    /// This property encapsulates the destination/source node associated with the specific cost.
+    /// Represents the unique identifier or key associated with a node in a graph structure.
     /// </summary>
-    /// <typeparam name="T">
-    /// The type of the node value, which must implement <see cref="System.IEquatable{T}"/>.
-    /// </typeparam>
-    public T NodeValue { get; set; } = default!;
+    public TK NodeKey { get; set; } = default!;
 
     /// <summary>
     /// Represents the cost associated with an edge in the graph.
@@ -18,9 +14,9 @@ public record EdgeTuple<T>
     /// </summary>
     public decimal Cost { get; set; } = decimal.Zero;
 
-    public void Deconstruct(out T nodeValue, out decimal cost)
+    public void Deconstruct(out TK nodeKey, out decimal cost)
     {
-        nodeValue = NodeValue;
+        nodeKey = NodeKey;
         cost = Cost;
     }
 }

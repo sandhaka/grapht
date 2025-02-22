@@ -4,24 +4,24 @@ using Monads.Optional;
 
 namespace GraphT.Graph.Search.Strategies;
 
-public class Backtracking<T> : IShortestPathSearchStrategy<T> 
-    where T : IEquatable<T>
+public class Backtracking<TK> : IShortestPathSearchStrategy<TK> 
+    where TK : IEquatable<TK>
 {
     private decimal _bestCost = decimal.MaxValue;
-    private IReadOnlyList<T> _bestPath = [];
+    private IReadOnlyList<TK> _bestPath = [];
     
     public string Name => "Backtracking";
 
-    public Option<Heuristic<T>> Heuristic { get; set; } = Option<Heuristic<T>>.None();
+    public Option<Heuristic<TK>> Heuristic { get; set; } = Option<Heuristic<TK>>.None();
     
-    public bool Run(IPathSearchContext<T> context, out Option<SearchResult<T>> result)
+    public bool Run(IPathSearchContext<TK> context, out Option<SearchResult<TK>> result)
     {
         _bestCost = decimal.MaxValue;
         _bestPath = [];
         
         Backtrack(context, context.Start, [ context.Start ], 0);
         
-        result = new SearchResult<T>
+        result = new SearchResult<TK>
         {
             Path = _bestPath,
             TotalCost = _bestCost
@@ -30,7 +30,7 @@ public class Backtracking<T> : IShortestPathSearchStrategy<T>
         return _bestCost != decimal.MaxValue;
     }
 
-    private void Backtrack(IPathSearchContext<T> context, T node, List<T> path, decimal currentCost)
+    private void Backtrack(IPathSearchContext<TK> context, TK node, List<TK> path, decimal currentCost)
     {
         if (node.Equals(context.Target))
         {
@@ -45,17 +45,17 @@ public class Backtracking<T> : IShortestPathSearchStrategy<T>
 
         foreach (var edge in context.NodeEdges(node))
         {
-            var nodeValue = edge.NodeValue;
+            var nodeKey = edge.NodeKey;
             var cost = edge.Cost;
             
-            if (path.Contains(nodeValue))
+            if (path.Contains(nodeKey))
                 continue; // Avoiding loops
 
             var newCost = currentCost + cost;
             
-            path.Add(nodeValue);
+            path.Add(nodeKey);
 
-            Backtrack(context, nodeValue, path, newCost); // Recursion :(
+            Backtrack(context, nodeKey, path, newCost); // Recursion :(
             
             path.RemoveAt(path.Count - 1);
         }

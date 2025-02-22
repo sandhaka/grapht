@@ -36,11 +36,11 @@ public class Architecture(ITestOutputHelper output)
         var problem = new SimpleGraphModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
-        graph.OnVisitActionParameter = new OnVisit<string>(value =>
+        graph.OnVisitActionParameter = new OnVisit<string>(key =>
         {
-            _output.WriteLine($"Visiting {value}");
+            _output.WriteLine($"Visiting {key}");
 
-            if (value.Equals("M"))
+            if (key.Equals("M"))
                 _output.WriteLine("I'm reached M!");
         });
 
@@ -57,11 +57,11 @@ public class Architecture(ITestOutputHelper output)
         var problem = new SimpleGraphModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
-        graph.OnVisitActionParameter = new OnVisit<string>(value =>
+        graph.OnVisitActionParameter = new OnVisit<string>(key =>
         {
-            _output.WriteLine($"Visiting {value}");
+            _output.WriteLine($"Visiting {key}");
 
-            if (value.Equals("M"))
+            if (key.Equals("M"))
                 _output.WriteLine("I'm reached M!");
         });
 
@@ -89,18 +89,18 @@ public class Architecture(ITestOutputHelper output)
         var problem = new PathModel();
         var graph = Graph<string>.CreateReadOnly(problem);
 
-        graph.OnVisitActionParameter = new OnVisit<string>(value =>
+        graph.OnVisitActionParameter = new OnVisit<string>(key =>
         {
-            _output.WriteLine($"Visiting {value}");
+            _output.WriteLine($"Visiting {key}");
 
-            if (value.Equals("X"))
+            if (key.Equals("X"))
                 _output.WriteLine("X is reachable!");
         });
         
         const string from = "Z";
         const decimal edgeCost = 10.0m;
 
-        EdgeTuple<string>[] ingressEdges = [new() { NodeValue = from, Cost = edgeCost }];
+        EdgeTuple<string>[] ingressEdges = [new() { NodeKey = from, Cost = edgeCost }];
 
         Assert.False(graph.ContainsNode("X"));
         
@@ -140,11 +140,11 @@ public class Architecture(ITestOutputHelper output)
 
         var exception1 = Assert.Throws<ArgumentException>(() =>
         {
-            EdgeTuple<string>[] notExistingEdges = [ new() { NodeValue = "L", Cost = 10.0m } ];
+            EdgeTuple<string>[] notExistingEdges = [ new() { NodeKey = "L", Cost = 10.0m } ];
             graph.Mod().AddNode("X", notExistingEdges, Option<EdgeTuple<string>[]>.None());
         });
         
-        Assert.Equal("Edge to a node with a non existent value", exception1.Message);
+        Assert.Equal("Edge to a node with a non existent key", exception1.Message);
     }
     
     [Fact]

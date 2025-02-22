@@ -7,21 +7,21 @@ namespace GraphT.Graph.Search;
 /// within a graph. It utilizes a search strategy to find the path from a start
 /// node to a target node.
 /// </summary>
-/// <typeparam name="T">The type of node values within the graph, which must implement IEquatable.</typeparam>
-public interface IPathSearch<T>
-    where T : IEquatable<T>
+/// <typeparam name="TK">The type of node keys within the graph, which must implement IEquatable.</typeparam>
+public interface IPathSearch<TK>
+    where TK : IEquatable<TK>
 {
     /// <summary>
     /// Gets or sets the path search strategy.
     /// </summary>
     /// <remarks>
     /// The <c>ShortestPathSearchStrategy</c> property defines the strategy used for searching paths
-    /// within a graph. This property must implement the <see cref="IShortestPathSearchStrategy{T}"/>
+    /// within a graph. This property must implement the <see cref="IShortestPathSearchStrategy{TK}"/>
     /// interface, which is designed to encapsulate different pathfinding algorithms or processes.
     /// The chosen strategy affects how the path is calculated or selected, impacting both the
     /// efficiency and the result of the search operation. Default implementation is Dijkstra algorithm.
     /// </remarks>
-    IShortestPathSearchStrategy<T> ShortestPathSearchStrategy { get; set; }
+    IShortestPathSearchStrategy<TK> ShortestPathSearchStrategy { get; set; }
 
     /// <summary>
     /// Searches for a path from a starting node to a target node in a graph and returns the result of the search.
@@ -32,5 +32,5 @@ public interface IPathSearch<T>
     /// <returns>
     /// True if a path from the start to the target is found; otherwise, false.
     /// </returns>
-    bool Search(T start, T target, out Option<SearchResult<T>> result);
+    bool Search(TK start, TK target, out Option<SearchResult<TK>> result);
 }

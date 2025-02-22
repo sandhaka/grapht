@@ -3,16 +3,16 @@ using GraphT.Graph.Architecture.NodeCollections;
 
 namespace GraphT.Graph.Architecture.Implementations;
 
-internal sealed class ReadOnlyGraph<T> : GraphBase<T> 
-    where T : IEquatable<T>
+internal sealed class ReadOnlyGraph<TK> : GraphBase<TK> 
+    where TK : IEquatable<TK>
 {
-    private ReadOnlyGraph(IEnumerable<Node<T>> nodes) : base(new FrozenNodeCollection<T>(nodes))
+    private ReadOnlyGraph(IEnumerable<Node<TK>> nodes) : base(new FrozenNodeCollection<TK>(nodes))
     {
     }
 
-    public static ReadOnlyGraph<T> Create(IEnumerable<Node<T>> nodes)
+    public static ReadOnlyGraph<TK> Create(IEnumerable<Node<TK>> nodes)
     {
-        var g = new ReadOnlyGraph<T>(nodes);
+        var g = new ReadOnlyGraph<TK>(nodes);
         
         return g;
     }

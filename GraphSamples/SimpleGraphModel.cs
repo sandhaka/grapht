@@ -4,8 +4,8 @@ namespace GraphSamples;
 
 public class SimpleGraphModel : IGraphListModel<string>
 {
-    public IDictionary<string, List<(string Value, decimal Cost)>> AdjacencyList { get; } = 
-        new Dictionary<string, List<(string Value, decimal Cost)>> 
+    public IDictionary<string, List<(string Key, decimal Cost)>> AdjacencyList { get; } = 
+        new Dictionary<string, List<(string Key, decimal Cost)>>
         {
             ["A"] = [("B", 0), ("C", 0)],
             ["B"] = [("D", 0)],

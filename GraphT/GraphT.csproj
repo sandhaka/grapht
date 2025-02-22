@@ -12,4 +12,8 @@
       <PackageReference Include="monads" Version="1.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Graph\Architecture\Constraints\" />
+    </ItemGroup>
+
 </Project>

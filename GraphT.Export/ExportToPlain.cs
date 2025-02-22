@@ -2,7 +2,7 @@ using GraphT.Graph;
 
 namespace GraphT.Export;
 
-internal class ExportToPlain<T>(IGraph<T> graph) where T : IEquatable<T>
+internal class ExportToPlain<TK>(IGraph<TK> graph) where TK : IEquatable<TK>
 {
     public string Export()
     {

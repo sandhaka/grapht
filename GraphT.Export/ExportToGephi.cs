@@ -4,7 +4,7 @@ using GraphT.Graph;
 
 namespace GraphT.Export;
 
-internal class ExportToGephi<T>(IGraph<T> graph) where T : IEquatable<T>
+internal class ExportToGephi<TK>(IGraph<TK> graph) where TK : IEquatable<TK>
 {
     public string Export()
     {

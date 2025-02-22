@@ -2,9 +2,9 @@ using GraphT.Graph.Architecture.Components;
 
 namespace GraphT.Graph.Architecture.Abstractions;
 
-internal interface IGraphComponents<T> 
-    where T : IEquatable<T>
+internal interface IGraphComponents<TK> 
+    where TK : IEquatable<TK>
 {
-    IReadOnlySet<T> NodeValues { get; }
-    Node<T> this[T value] { get; }
+    IReadOnlySet<TK> NodeKeys { get; }
+    Node<TK> this[TK key] { get; }
 }
