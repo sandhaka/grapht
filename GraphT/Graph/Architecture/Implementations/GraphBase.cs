@@ -1,7 +1,6 @@
 using GraphT.Graph.Architecture.Abstractions;
 using GraphT.Graph.Architecture.Components;
 using GraphT.Graph.Architecture.NodeCollections;
-using GraphT.Graph.Constraints;
 using GraphT.Graph.Dto;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
@@ -177,11 +176,6 @@ internal abstract class GraphBase<TK> : IGraph<TK>, IGraphComponents<TK>
         }
         
         return allEdges.AsReadOnly();
-    }
-
-    public ICsp<TK> ToCsp(IDictionary<TK, Domain> domains, IDictionary<TK, IConstraint[]> constraints)
-    {
-        throw new NotImplementedException();
     }
 
     public bool IsCyclic() => FindCycle();

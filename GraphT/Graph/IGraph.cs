@@ -1,4 +1,3 @@
-using GraphT.Graph.Constraints;
 using GraphT.Graph.Dto;
 using GraphT.Graph.Parameters;
 using GraphT.Graph.Search;
@@ -118,13 +117,4 @@ public interface IGraph<TK>
     /// </summary>
     /// <returns>A list of edges, where each edge contains the source, destination, and cost.</returns>
     IReadOnlyList<EdgeData<TK>> AllEdges();
-
-    /// <summary>
-    /// Converts the graph into a constraint satisfaction problem (CSP) representation,
-    /// associating domains and constraints with the graph nodes.
-    /// </summary>
-    /// <param name="domains">A dictionary mapping each node to a domain of possible values.</param>
-    /// <param name="constraints">A dictionary mapping each node to an array of constraints to be satisfied.</param>
-    /// <returns>An ICsp instance representing the graph as a CSP.</returns>
-    ICsp<TK> ToCsp(IDictionary<TK, Domain> domains, IDictionary<TK, IConstraint[]> constraints);
 }

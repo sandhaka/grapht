@@ -1,6 +1,4 @@
 using System.Diagnostics;
-using GraphT.Graph.Constraints;
-using Monads.Optional;
 
 namespace GraphT.Graph.Architecture.Components;
 
@@ -8,8 +6,6 @@ namespace GraphT.Graph.Architecture.Components;
 internal record Node<TK>(TK Key) where TK : IEquatable<TK>
 {
     public Memory<Edge<TK>> Edges { get; set; } = Memory<Edge<TK>>.Empty;
-    
-    public Option<IVariable> Variable { get; set; } = Option<IVariable>.None();
     
     public bool HasEdges => !Edges.IsEmpty;
 
