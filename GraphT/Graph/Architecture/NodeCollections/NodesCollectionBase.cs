@@ -28,11 +28,10 @@ internal abstract class NodesCollectionBase<TK> : INodeCollection<TK>, IEnumerab
     {
         get
         {
-            using var enumerator = Nodes.GetEnumerator();
-            while (enumerator.MoveNext())
+            foreach (var node in Nodes)
             {
-                if (enumerator.Current.Key.Equals(key))
-                    return enumerator.Current;
+                if (node.Key.Equals(key))
+                    return node;
             }
             
             throw new InvalidOperationException();
