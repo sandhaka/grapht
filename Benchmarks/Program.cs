@@ -4,5 +4,4 @@ using Benchmarks;
 
 var configuration = new BenchmarkConfiguration();
 
-BenchmarkRunner.Run<DijkstraPathFinding>(configuration);
-BenchmarkRunner.Run<BacktrackingPathFinding>(configuration);
+BenchmarkRunner.Run<PathFinding>(configuration);
